@@ -10,11 +10,13 @@
     IBOutlet id server;
     IBOutlet id username;
     IBOutlet id useTLS;
-
-    CTCoreAccount	*myAccount;
-    NSMutableArray	*myMessages;
 }
 - (IBAction)connect:(id)sender;
-- (NSMutableArray *)messages;
-- (void)setMessages:(NSMutableArray *)messages;
+
+@property (RONLY) NSUI inboxCt;
+@property (NATOM, STRNG) CTCoreAccount	*myAccount;
+@property (NATOM, STRNG) CTCoreFolder	*inbox;
+
+@property (NATOM, STRNG) NSA *messages;
+@property (NATOM, STRNG) NSOQ *q;
 @end
