@@ -13,12 +13,6 @@
 }
 
 
-- (void)dealloc
-{
-    [myAccount release];
-    [myMessages release];
-    [super dealloc];
-}
 
 
 - (IBAction)connect:(id)sender
@@ -67,8 +61,6 @@
 
 - (void)setMessages:(NSMutableArray *)messages
 {
-    [messages retain];
-    [myMessages release];
     myMessages = messages;
 }
 @end
