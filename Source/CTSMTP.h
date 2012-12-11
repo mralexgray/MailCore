@@ -8,8 +8,8 @@
  should not use this directly.	*/
 
 @interface CTSMTP : NSObject {
-    mailsmtp *mySMTP; /* This resource is created and freed by CTSMTPConnection */
-    NSError *lastError;
+	mailsmtp *mySMTP; /* This resource is created and freed by CTSMTPConnection */
+	NSError *lastError;
 }
 /*
  If an error occurred (nil or return of NO) call this method to get the error	*/

@@ -11,7 +11,7 @@
 
 
 + (id)addressWithName: (NSString*)aName email: (NSString*)aEmail {
-    return  [CTCoreAddress.alloc initWithName:aName email:aEmail];
+	return  [CTCoreAddress.alloc initWithName:aName email:aEmail];
 }
 
 - (id)initWithName: (NSString*)aName email: (NSString*)aEmail
@@ -19,35 +19,35 @@
 	if (self != super.init ) return nil;
 	name = aName;
 	email = aEmail;
-    return self;
+	return self;
 }
 
 - (id)init
 {
 	if (self != super.init ) return nil;
 	[self setName:@""];
-    [self setEmail:@""];
-    return self;
+	[self setEmail:@""];
+	return self;
 }
 
 -(NSString*)decodedName {
-    return MailCoreDecodeMIMEPhrase((char *)[self.name UTF8String]);
+	return MailCoreDecodeMIMEPhrase((char *)[self.name UTF8String]);
 }
 
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"<%@,%@>", [self name],[self email]];
+	return [NSString stringWithFormat:@"<%@,%@>", [self name],[self email]];
 }
 
 - (BOOL) isEqual:(id)object
 {
-    if (![object isKindOfClass:[CTCoreAddress class]])	return NO;
-    return [[object name] isEqualToString:self.name] && [[object email] isEqualToString:self.email];
+	if (![object isKindOfClass:[CTCoreAddress class]])	return NO;
+	return [[object name] isEqualToString:self.name] && [[object email] isEqualToString:self.email];
 }
 
 - (void)dealloc {
-    [email release];
-    [name release];
-    [super dealloc];
+	[email release];
+	[name release];
+	[super dealloc];
 }
 @end

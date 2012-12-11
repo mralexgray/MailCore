@@ -8,8 +8,8 @@
 
 @interface CTCoreAddress : NSObject
 //{
-//    NSString *email;
-//    NSString *name;
+//	NSString *email;
+//	NSString *name;
 //}
 /**	Returns a CTCoreAddress with the name and e-mail address set as an empty string.	*/
 + (id)address;

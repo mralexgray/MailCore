@@ -11,12 +11,12 @@
 @class CTCoreMessage, CTCoreAccount;
 @interface CTCoreFolder : NSObject
 {
-    struct mailfolder 	*myFolder;
-    CTCoreAccount 		*myAccount;
-    NSString 			*myPath;
-    BOOL 				connected, idling;
-    NSError 			*lastError;
-    int 				idlePipe[2];
+	struct mailfolder 	*myFolder;
+	CTCoreAccount 		*myAccount;
+	NSString 			*myPath;
+	BOOL 				connected, idling;
+	NSError 			*lastError;
+	int 				idlePipe[2];
 }
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
 @property (nonatomic, retain) NSError *lastError;

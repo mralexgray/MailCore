@@ -10,7 +10,7 @@
 
 }
 + (CTMIME *)createMIMEWithMIMEStruct:(struct mailmime *)mime 
-                forMessage:(struct mailmessage *)message;
+				forMessage:(struct mailmessage *)message;
 + (CTMIME_SinglePart *)createMIMESinglePartWithMIMEStruct:(struct mailmime *)mime
-                        forMessage:(struct mailmessage *)message;
+						forMessage:(struct mailmessage *)message;
 @end

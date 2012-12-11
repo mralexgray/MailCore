@@ -11,10 +11,10 @@
 @class CTCoreFolder;
 
 @interface CTCoreAccount : NSObject {
-    struct mailstorage *myStorage;
-    BOOL connected;
-    NSError *lastError;
-    NSString *pathDelimiter;
+	struct mailstorage *myStorage;
+	BOOL connected;
+	NSError *lastError;
+	NSString *pathDelimiter;
 }
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
 @property(nonatomic, retain) NSError *lastError;
@@ -50,7 +50,7 @@
 	@param password The password to use to connect.
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
 - (BOOL) connectToServer: (NSString*)server port:(int)port connectionType:(int)conType authType:(int)authType
-                        login: (NSString*)login password: (NSString*)password;
+						login: (NSString*)login password: (NSString*)password;
 
 /**	This method returns the current connection status.
 	@return Returns YES or NO as the status of the connection.	*/

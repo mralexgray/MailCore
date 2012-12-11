@@ -5,11 +5,11 @@
 
 @interface MyController : NSObject
 {
-    IBOutlet id password;
-    IBOutlet id port;
-    IBOutlet id server;
-    IBOutlet id username;
-    IBOutlet id useTLS;
+	IBOutlet id password;
+	IBOutlet id port;
+	IBOutlet id server;
+	IBOutlet id username;
+	IBOutlet id useTLS;
 }
 - (IBAction)connect:(id)sender;
 

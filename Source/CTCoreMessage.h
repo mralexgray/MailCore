@@ -11,12 +11,12 @@
 @class CTCoreFolder, CTCoreAddress, CTCoreAttachment, CTMIME;
 @interface CTCoreMessage : NSObject
 {
-    struct mailmessage 				*myMessage;
-    struct mailimf_single_fields 	*myFields;
-    CTMIME 							*myParsedMIME;
-    NSUInteger 						mySequenceNumber;
-    NSError 						*lastError;
-    CTCoreFolder 					*parentFolder;
+	struct mailmessage 				*myMessage;
+	struct mailimf_single_fields 	*myFields;
+	CTMIME 							*myParsedMIME;
+	NSUInteger 						mySequenceNumber;
+	NSError 						*lastError;
+	CTCoreFolder 					*parentFolder;
 }
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
 @property (nonatomic, strong) NSError 		*lastError;

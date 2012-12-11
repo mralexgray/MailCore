@@ -7,7 +7,7 @@
 	if (self != super.init ) return nil;
 	_myAccount 	= CTCoreAccount.new;
 	_messages	= NSMA.new;
-    _q 	 		= NSOQ.new;
+	_q 	 		= NSOQ.new;
 	return self;
 }
 
@@ -36,7 +36,7 @@
 }
 - (IBAction)connect:(id)sender
 {
-    NSLog(@"Connecting...");
+	NSLog(@"Connecting...");
 
 
 	[_q addOperationWithBlock:^{
@@ -66,13 +66,13 @@
 		self.messages = [_inbox messagesFromSequenceNumber:1 to:0 withFetchAttributes:CTFetchAttrEnvelope];
 //		NSLog(@"Done getting list of messages... %@", messageSet);
 	}];
-//    NSMutableSet *messagesProxy = [self mutableSetValueForKey:@"messages"];
+//	NSMutableSet *messagesProxy = [self mutableSetValueForKey:@"messages"];
 //	[messageSet each:^(id obj) {
 //		BOOL canya = [obj fetchBodyStructure];
 //		NSLog(@"can fetch body:%@  for %@", StringFromBOOL(canya), obj);
 //		!canya ?: [self.messages addObject:obj];
-////        [messa/gesProxy addObject:msg];
-//    }];
+////		[messa/gesProxy addObject:msg];
+//	}];
 }
 
 

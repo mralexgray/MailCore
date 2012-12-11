@@ -23,13 +23,13 @@
 	@param error Will contain an error when the method returns NO
 	@return Returns YES on success, NO on error	*/
 + (BOOL)sendMessage:(CTCoreMessage *)message
-             server: (NSString*)server
-           username: (NSString*)username
-           password: (NSString*)password
-               port:(unsigned int)port
-     connectionType:(CTSMTPConnectionType)connectionType
-            useAuth:(BOOL)auth
-              error:(NSError **)error;
+			 server: (NSString*)server
+		   username: (NSString*)username
+		   password: (NSString*)password
+			   port:(unsigned int)port
+	 connectionType:(CTSMTPConnectionType)connectionType
+			useAuth:(BOOL)auth
+			  error:(NSError **)error;
 
 /**	Use this method to test the user's credentials.
 This is useful for account setup. You can have the user enter in their credentials and then verify they work without sending a message.
@@ -43,11 +43,11 @@ This is useful for account setup. You can have the user enter in their credentia
 	@return Returns YES on success, NO on error
  */
 + (BOOL)canConnectToServer: (NSString*)server
-                  username: (NSString*)username
-                  password: (NSString*)password
-                      port:(unsigned int)port
-            connectionType:(CTSMTPConnectionType)connectionType
-                   useAuth:(BOOL)auth
-                     error:(NSError **)error;
+				  username: (NSString*)username
+				  password: (NSString*)password
+					  port:(unsigned int)port
+			connectionType:(CTSMTPConnectionType)connectionType
+				   useAuth:(BOOL)auth
+					 error:(NSError **)error;
 
 @end

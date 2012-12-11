@@ -4,7 +4,7 @@
 #import "CTMIME.h"
 
 @interface CTMIME_MultiPart : CTMIME {
-    NSMutableArray *myContentList;
+	NSMutableArray *myContentList;
 }
 + (id)mimeMultiPart;
 - (void)addMIMEPart:(CTMIME *)mime;

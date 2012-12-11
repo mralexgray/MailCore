@@ -8,38 +8,38 @@
 /** Constants for fetching messages **/
 
 typedef NS_ENUM(NSUInteger, CTFetchAttributes) {
-    CTFetchAttrDefaultsOnly     = 0,
-    CTFetchAttrBodyStructure    = 1 << 0,
-    CTFetchAttrEnvelope         = 1 << 1
+	CTFetchAttrDefaultsOnly	 = 0,
+	CTFetchAttrBodyStructure	= 1 << 0,
+	CTFetchAttrEnvelope		 = 1 << 1
 };
 
 /** Constants for IDLE **/
 
 typedef NS_ENUM(NSUInteger, CTIdleResult) {
-    CTIdleNewData = 0,
-    CTIdleTimeout,
-    CTIdleCancelled,
-    CTIdleError
+	CTIdleNewData = 0,
+	CTIdleTimeout,
+	CTIdleCancelled,
+	CTIdleError
 };
 
 /** Connection Constants **/
 
 typedef NS_ENUM(NSUInteger, CTSMTPConnectionType) {
-    CTSMTPConnectionTypePlain = 0,
-    CTSMTPConnectionTypeStartTLS,
-    CTSMTPConnectionTypeTLS
+	CTSMTPConnectionTypePlain = 0,
+	CTSMTPConnectionTypeStartTLS,
+	CTSMTPConnectionTypeTLS
 };
 
 /* when the connection is plain text */
-#define CTConnectionTypePlain       CONNECTION_TYPE_PLAIN
+#define CTConnectionTypePlain	   CONNECTION_TYPE_PLAIN
 /* when the connection is first plain, then, we want to switch to TLS (secure connection) */
-#define CTConnectionTypeStartTLS    CONNECTION_TYPE_STARTTLS
+#define CTConnectionTypeStartTLS	CONNECTION_TYPE_STARTTLS
 /* the connection is first plain, then, we will try to switch to TLS */
 #define CTConnectionTypeTryStartTLS CONNECTION_TYPE_TRY_STARTTLS
 /* the connection is over TLS */
-#define CTConnectionTypeTLS         CONNECTION_TYPE_TLS
+#define CTConnectionTypeTLS		 CONNECTION_TYPE_TLS
 
-#define CTImapAuthTypePlain         IMAP_AUTH_TYPE_PLAIN
+#define CTImapAuthTypePlain		 IMAP_AUTH_TYPE_PLAIN
 
 /** List of Message Flags **/
 
@@ -55,7 +55,7 @@ typedef NS_ENUM(NSUInteger, CTSMTPConnectionType) {
 
 typedef NS_ENUM(NSUInteger, CTSMTPAsyncStatus)
 {
-    CTSMTPAsyncSuccess = 0,
-    CTSMTPAsyncCanceled = 1,
-    CTSMTPAsyncError = 2
+	CTSMTPAsyncSuccess = 0,
+	CTSMTPAsyncCanceled = 1,
+	CTSMTPAsyncError = 2
 };

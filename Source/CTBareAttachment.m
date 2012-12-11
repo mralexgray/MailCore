@@ -12,43 +12,43 @@
 @synthesize filename=mFilename;
 
 - (id)initWithMIMESinglePart:(CTMIME_SinglePart *)part {
-    self = [super init];
-    if (self) {
-        mMIMEPart = [part retain];
-        self.filename = mMIMEPart.filename;
-        self.contentType = mMIMEPart.contentType;
-    }
-    return self;
+	self = [super init];
+	if (self) {
+		mMIMEPart = [part retain];
+		self.filename = mMIMEPart.filename;
+		self.contentType = mMIMEPart.contentType;
+	}
+	return self;
 }
 
 -(NSString*)decodedFilename {
-    return MailCoreDecodeMIMEPhrase((char *)[self.filename UTF8String]);
+	return MailCoreDecodeMIMEPhrase((char *)[self.filename UTF8String]);
 }
 
 - (NSString*)description {
-    return [NSString stringWithFormat:@"ContentType: %@\tFilename: %@",
-                self.contentType, self.filename];
+	return [NSString stringWithFormat:@"ContentType: %@\tFilename: %@",
+				self.contentType, self.filename];
 }
 
 - (CTCoreAttachment *)fetchFullAttachment {
-    return [self fetchFullAttachmentWithProgress:^(size_t curr, size_t max) {}];
+	return [self fetchFullAttachmentWithProgress:^(size_t curr, size_t max) {}];
 }
 
 - (CTCoreAttachment *)fetchFullAttachmentWithProgress:(CTProgressBlock)block {
-    [mMIMEPart fetchPartWithProgress:block];
-    CTCoreAttachment *attach = [[CTCoreAttachment alloc] initWithData:mMIMEPart.data
-                                                          contentType:self.contentType filename:self.filename];
-    return [attach autorelease];
+	[mMIMEPart fetchPartWithProgress:block];
+	CTCoreAttachment *attach = [[CTCoreAttachment alloc] initWithData:mMIMEPart.data
+														  contentType:self.contentType filename:self.filename];
+	return [attach autorelease];
 }
 
 - (CTMIME_SinglePart *)part {
-    return mMIMEPart;
+	return mMIMEPart;
 }
 
 - (void)dealloc {
-    [mMIMEPart release];
-    [mFilename release];
-    [mContentType release];
-    [super dealloc];
+	[mMIMEPart release];
+	[mFilename release];
+	[mContentType release];
+	[super dealloc];
 }
 @end

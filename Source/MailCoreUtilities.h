@@ -3,7 +3,7 @@
 #import <Foundation/Foundation.h>
 #import <libetpan/libetpan.h>
 
-/**	    Enables logging of all streams, data is output to standard out.	*/
+/**		Enables logging of all streams, data is output to standard out.	*/
 void MailCoreEnableLogging();
 void MailCoreDisableLogging();
 

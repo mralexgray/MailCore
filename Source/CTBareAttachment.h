@@ -7,9 +7,9 @@
 
 /**	Represents an attachment before it has been fully fetched.	*/
 @interface CTBareAttachment : NSObject {
-    CTMIME_SinglePart *mMIMEPart;
-    NSString *mFilename;
-    NSString *mContentType;
+	CTMIME_SinglePart *mMIMEPart;
+	NSString *mFilename;
+	NSString *mContentType;
 }
 @property(retain) NSString *filename;
 @property(retain) NSString *contentType;
