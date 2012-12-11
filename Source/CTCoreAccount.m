@@ -1,33 +1,4 @@
-/*
- * MailCore
- *
- * Copyright (C) 2007 - Matt Ronge
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the MailCore project nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
 
 #import "CTCoreAccount.h"
 #import "CTCoreFolder.h"
@@ -65,13 +36,13 @@
     return lastError;
 }
 
-- (BOOL)isConnected {
+- (BOOL) isConnected {
     return connected;
 }
 
-- (BOOL)connectToServer:(NSString *)server port:(int)port
+- (BOOL) connectToServer: (NSString*)server port:(int)port
         connectionType:(int)conType authType:(int)authType
-        login:(NSString *)login password:(NSString *)password {
+        login: (NSString*)login password: (NSString*)password {
     int err = 0;
     int imap_cached = 0;
 
@@ -150,7 +121,7 @@
     }
 }
 
-- (CTCoreFolder *)folderWithPath:(NSString *)path {
+- (CTCoreFolder *)folderWithPath: (NSString*)path {
     CTCoreFolder *folder = [[CTCoreFolder alloc] initWithPath:path inAccount:self];
     return [folder autorelease];
 }
@@ -208,7 +179,7 @@
         if (selectable) {
             mailboxName = mailboxStruct->mb_name;
             // Per RFC 3501, mailbox names must use 7-bit enconding (UTF-7).
-            mailboxNameObject = (NSString *)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
+            mailboxNameObject = (NSString*)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
 
             if (mailboxStruct->mb_delimiter) {
                 self.pathDelimiter = [NSString stringWithFormat:@"%c", mailboxStruct->mb_delimiter];
@@ -252,7 +223,7 @@
         if (selectable) {
             mailboxName = mailboxStruct->mb_name;
             // Per RFC 3501, mailbox names must use 7-bit enconding (UTF-7).
-            mailboxNameObject = (NSString *)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
+            mailboxNameObject = (NSString*)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
             
             if (mailboxStruct->mb_delimiter) {
                 self.pathDelimiter = [NSString stringWithFormat:@"%c", mailboxStruct->mb_delimiter];
@@ -300,7 +271,7 @@
         if (selectable) {
             mailboxName = mailboxStruct->mb_name;
             // Per RFC 3501, mailbox names must use 7-bit enconding (UTF-7).
-            mailboxNameObject = (NSString *)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
+            mailboxNameObject = (NSString*)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
             
             if (mailboxStruct->mb_delimiter) {
                 self.pathDelimiter = [NSString stringWithFormat:@"%c", mailboxStruct->mb_delimiter];
@@ -316,7 +287,7 @@
                 for (flagIter = clist_begin(flags->mbf_oflags); flagIter != NULL; flagIter = flagIter->next) {
                     oflagStruct = flagIter->data;
                     flagName = oflagStruct->of_flag_ext;
-                    flagNameObject = (NSString *)CFStringCreateWithCString(NULL, flagName, kCFStringEncodingUTF7_IMAP);
+                    flagNameObject = (NSString*)CFStringCreateWithCString(NULL, flagName, kCFStringEncodingUTF7_IMAP);
                     [listResult addFlag:flagNameObject];
                     [flagNameObject release];
                 }

@@ -54,7 +54,7 @@
     [super dealloc];
 }
 
-- (void)addFlag:(NSString *)flag
+- (void)addFlag: (NSString*)flag
 {
     [_flags addObject:flag];
 }

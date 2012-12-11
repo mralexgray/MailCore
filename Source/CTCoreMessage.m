@@ -1,33 +1,4 @@
-/*
- * MailCore
- *
- * Copyright (C) 2007 - Matt Ronge
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the MailCore project nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
 
 #import <libetpan/libetpan.h>
 #import "CTCoreMessage.h"
@@ -46,74 +17,60 @@
 @implementation CTCoreMessage
 @synthesize mime=myParsedMIME, lastError, parentFolder;
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        struct mailimf_fields *fields = mailimf_fields_new_empty();
-        myFields = mailimf_single_fields_new(fields);
-        mailimf_fields_free(fields);
-    }
+- (id)init
+{
+	if (self != super.init ) return nil;
+	struct mailimf_fields *fields = mailimf_fields_new_empty();
+    myFields = mailimf_single_fields_new(fields);
+    mailimf_fields_free(fields);
     return self;
 }
 
 
-- (id)initWithMessageStruct:(struct mailmessage *)message {
-    self = [super init];
-    if (self) {
-        assert(message != NULL);
-        myMessage = message;
-        myFields = mailimf_single_fields_new(message->msg_fields);
-    }
+- (id)initWithMessageStruct:(struct mailmessage *)message
+{
+	if (self != super.init ) return nil;
+	assert(message != NULL);
+    myMessage 	= message;
+    myFields 	= mailimf_single_fields_new( message -> msg_fields );
     return self;
 }
 
-- (id)initWithFileAtPath:(NSString *)path {
+- (id)initWithFileAtPath: (NSString*)path {
     return [self initWithString:[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL]];
 }
 
-- (id)initWithString:(NSString *)msgData {
+- (id)initWithString: (NSString*)msgData
+{
     struct mailmessage *msg = data_message_init((char *)[msgData cStringUsingEncoding:NSUTF8StringEncoding],
                                     [msgData lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
     int err;
     struct mailmime *dummyMime;
     /* mailmessage_get_bodystructure will fill the mailmessage struct for us */
     err = mailmessage_get_bodystructure(msg, &dummyMime);
-    if (err != MAIL_NO_ERROR) {
-        return nil;
-    }
-    return [self initWithMessageStruct:msg];
+    return err != MAIL_NO_ERROR ? nil : [self initWithMessageStruct:msg];
 }
-
 
 - (void)dealloc {
     if (myMessage != NULL) {
         mailmessage_flush(myMessage);
         mailmessage_free(myMessage);
     }
-    if (myFields != NULL) {
-        mailimf_single_fields_free(myFields);
-    }
-    self.lastError = nil;
-    self.parentFolder = nil;
+    if (myFields != NULL)   mailimf_single_fields_free(myFields);
+	
+    self.lastError 		= nil;
+    self.parentFolder 	= nil;
     [myParsedMIME release];
     [super dealloc];
 }
 
-- (NSError *)lastError {
-    return lastError;
-}
+- (NSError *)lastError 		{	return lastError;	}
 
-- (BOOL)hasBodyStructure {
-    if (myParsedMIME == nil) {
-        return NO;
-    }
-    return YES;
-}
+- (BOOL) hasBodyStructure 	{	return myParsedMIME == nil ? NO : YES;	}
 
-- (BOOL)fetchBodyStructure {
-    if (myMessage == NULL) {
-        return NO;
-    }
+- (BOOL) fetchBodyStructure
+{
+	if (myMessage == NULL)   return NO;
 
     int err;
     struct mailmime *dummyMime;
@@ -128,11 +85,11 @@
     myParsedMIME = [[CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct]->msg_mime
                         forMessage:[self messageStruct]] retain];
     [oldMIME release];
-
     return YES;
 }
 
-- (void)setBodyStructure:(struct mailmime *)mime {
+- (void)setBodyStructure:(struct mailmime *)mime
+{
     CTMIME *oldMIME = myParsedMIME;
     myMessage->msg_mime = mime;
     myParsedMIME = [[CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct]->msg_mime
@@ -140,49 +97,44 @@
     [oldMIME release];
 }
 
-- (void)setFields:(struct mailimf_fields *)fields {
-    if (myFields != NULL)
-        mailimf_single_fields_free(myFields);
+- (void)setFields:(struct mailimf_fields *)fields
+{
+    if (myFields != NULL)    mailimf_single_fields_free(myFields);
     myFields = mailimf_single_fields_new(fields);
 }
 
-- (NSString *)body {
-    if (myFields == NULL || myParsedMIME == nil) {
-        [self fetchBodyStructure];
-    }
+- (NSString*)body {
+    if (myFields == NULL || myParsedMIME == nil) [self fetchBodyStructure];
+
     NSMutableString *result = [NSMutableString string];
     [self _buildUpBodyText:myParsedMIME result:result];
     return result;
 }
 
-- (BOOL)hasHtmlBody:(CTMIME *)mime {
-    if ([mime isKindOfClass:[CTMIME_MessagePart class]]) {
-        return [self hasHtmlBody:[mime content]];
-    }
-    else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
-        if ([[mime.contentType lowercaseString] rangeOfString:@"text/html"].location != NSNotFound) {
-            return YES;
-        }
-    }
-    else if ([mime isKindOfClass:[CTMIME_MultiPart class]]) {
-        return YES;
-    }
-
-    return NO;
+- (BOOL) hasHtmlBody:(CTMIME *)mime
+{
+    return 	[mime isKindOfClass:[CTMIME_MessagePart class]] 	?
+				[self hasHtmlBody:[mime content]] 				:
+    		[mime isKindOfClass:[CTMIME_TextPart class]]			?
+				[[mime.contentType lowercaseString] rangeOfString:@"text/html"].location != NSNotFound :
+			[mime isKindOfClass:[CTMIME_MultiPart class]] 		?
+				YES	: NO;
 }
 
-- (BOOL)hasHtmlBody {
+- (BOOL) hasHtmlBody {
     CTMIME* mime = myParsedMIME;
     return [self hasHtmlBody:mime];
 }
 
-- (NSString *)htmlBody {
+- (NSString*)htmlBody
+{
     NSMutableString *result = [NSMutableString string];
     [self _buildUpHtmlBodyText:myParsedMIME result:result];
     return result;
 }
 
-- (NSString *)bodyPreferringPlainText:(BOOL *)isHTML {
+- (NSString*)bodyPreferringPlainText:(BOOL *)isHTML
+{
     NSString *body = [self body];
     *isHTML = NO;
     if ([body length] == 0) {
@@ -204,9 +156,8 @@
         if ([[mime.contentType lowercaseString] rangeOfString:@"text/plain"].location != NSNotFound) {
             [(CTMIME_TextPart *)mime fetchPart];
             NSString* y = [mime content];
-            if(y != nil) {
-                [result appendString:y];
-            }
+            if(y != nil)              [result appendString:y];
+		
         }
     }
     else if ([mime isKindOfClass:[CTMIME_MultiPart class]]) {
@@ -246,7 +197,7 @@
 }
 
 
-- (void)setBody:(NSString *)body {
+- (void)setBody: (NSString*)body {
     CTMIME *oldMIME = myParsedMIME;
     CTMIME_TextPart *text = [CTMIME_TextPart mimeTextPartWithString:body];
 
@@ -262,7 +213,7 @@
     }
 }
 
-- (void)setHTMLBody:(NSString *)body{
+- (void)setHTMLBody: (NSString*)body{
     CTMIME *oldMIME = myParsedMIME;
     CTMIME_HtmlPart *text = [CTMIME_HtmlPart mimeTextPartWithString:body];
     CTMIME_MessagePart *messagePart = [CTMIME_MessagePart mimeMessagePartWithContent:text];
@@ -316,7 +267,7 @@
     }
 }
 
-- (NSString *)subject {
+- (NSString*)subject {
     if (myFields->fld_subject == NULL)
         return nil;
     NSString *decodedSubject = MailCoreDecodeMIMEPhrase(myFields->fld_subject->sbj_value);
@@ -325,7 +276,7 @@
     return decodedSubject;
 }
 
-- (void)setSubject:(NSString *)subject {
+- (void)setSubject: (NSString*)subject {
     struct mailimf_subject *subjectStruct;
 
     subjectStruct = mailimf_subject_new(strdup([subject cStringUsingEncoding:NSUTF8StringEncoding]));
@@ -381,7 +332,7 @@
     }
 }
 
-- (BOOL)isUnread {
+- (BOOL) isUnread {
     struct mail_flags *flags = myMessage->msg_flags;
     if (flags != NULL) {
         BOOL flag_seen = (flags->fl_flags & MAIL_FLAG_SEEN);
@@ -390,7 +341,7 @@
     return NO;
 }
 
-- (BOOL)isStarred {
+- (BOOL) isStarred {
     struct mail_flags *flags = myMessage->msg_flags;
     if (flags != NULL) {
         BOOL flag_starred = (flags->fl_flags & MAIL_FLAG_FLAGGED);
@@ -399,7 +350,7 @@
     return NO;
 }
 
-- (BOOL)isNew {
+- (BOOL) isNew {
     struct mail_flags *flags = myMessage->msg_flags;
     if (flags != NULL) {
         BOOL flag_seen = (flags->fl_flags & MAIL_FLAG_SEEN);
@@ -409,7 +360,7 @@
     return NO;
 }
 
-- (NSString *)messageId {
+- (NSString*)messageId {
     if (myFields->fld_message_id != NULL) {
         char *value = myFields->fld_message_id->mid_value;
         return [NSString stringWithCString:value encoding:NSUTF8StringEncoding];
@@ -587,7 +538,7 @@
 }
 
 
-- (NSString *)render {
+- (NSString*)render {
     CTMIME *msgPart = myParsedMIME;
 
     if ([myParsedMIME isKindOfClass:[CTMIME_MessagePart class]]) {
@@ -646,7 +597,7 @@
     return emlx;
 }
 
-- (NSString *)rfc822 {
+- (NSString*)rfc822 {
     char *result = NULL;
     NSString *nsresult;
     int r = mailimap_fetch_rfc822([self imapSession], [self sequenceNumber], &result);
@@ -660,7 +611,7 @@
     return [nsresult autorelease];
 }
 
-- (NSString *)rfc822Header {
+- (NSString*)rfc822Header {
     char *result = NULL;
     NSString *nsresult;
     int r = mailimap_fetch_rfc822_header([self imapSession], [self sequenceNumber], &result);

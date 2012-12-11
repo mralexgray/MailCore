@@ -1,33 +1,4 @@
-/*
- * MailCore
- *
- * Copyright (C) 2007 - Matt Ronge
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the MailCore project nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
 
 #import "CTESMTP.h"
 
@@ -93,14 +64,14 @@ static int fill_local_ip_port(mailstream * stream, char * local_ip_port, size_t 
 
 @implementation CTESMTP
 
-- (BOOL)helo {
+- (BOOL) helo {
     int ret = mailesmtp_ehlo([self resource]);
     /* Return false if the server doesn't implement ehlo */
     return (ret != MAILSMTP_ERROR_NOT_IMPLEMENTED);
 }
 
 
-- (BOOL)startTLS {
+- (BOOL) startTLS {
     int ret = mailsmtp_socket_starttls([self resource]);
     if (ret != MAIL_NO_ERROR) {
         self.lastError = MailCoreCreateErrorFromSMTPCode(ret);
@@ -116,7 +87,7 @@ static int fill_local_ip_port(mailstream * stream, char * local_ip_port, size_t 
 }
 
 
-- (BOOL)authenticateWithUsername:(NSString *)username password:(NSString *)password server:(NSString *)server {
+- (BOOL) authenticateWithUsername: (NSString*)username password: (NSString*)password server: (NSString*)server {
     char *cUsername = (char *)[username cStringUsingEncoding:NSUTF8StringEncoding];
     char *cPassword = (char *)[password cStringUsingEncoding:NSUTF8StringEncoding];
     char *cServer = (char *)[server cStringUsingEncoding:NSUTF8StringEncoding];
@@ -163,7 +134,7 @@ static int fill_local_ip_port(mailstream * stream, char * local_ip_port, size_t 
 }
 
 
-- (BOOL)setFrom:(NSString *)fromAddress {
+- (BOOL) setFrom: (NSString*)fromAddress {
     int ret = mailesmtp_mail([self resource], [fromAddress cStringUsingEncoding:NSUTF8StringEncoding], 1, "MailCoreSMTP");
     if (ret != MAIL_NO_ERROR) {
         self.lastError = MailCoreCreateErrorFromSMTPCode(ret);
@@ -173,7 +144,7 @@ static int fill_local_ip_port(mailstream * stream, char * local_ip_port, size_t 
 }
 
 
-- (BOOL)setRecipientAddress:(NSString *)recAddress {
+- (BOOL) setRecipientAddress: (NSString*)recAddress {
     int ret = mailesmtp_rcpt([self resource], [recAddress cStringUsingEncoding:NSUTF8StringEncoding],
                         MAILSMTP_DSN_NOTIFY_FAILURE|MAILSMTP_DSN_NOTIFY_DELAY,NULL);
     if (ret != MAIL_NO_ERROR) {

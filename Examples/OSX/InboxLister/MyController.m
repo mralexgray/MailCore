@@ -6,9 +6,8 @@
 {
 	if (self != super.init ) return nil;
 	_myAccount 	= CTCoreAccount.new;
-//	_messages 	= NSA.new;
+	_messages	= NSMA.new;
     _q 	 		= NSOQ.new;
-	
 	return self;
 }
 
@@ -21,19 +20,17 @@
 	return itWorked ? theCount : 0;
 }
 
-- (void) setMessages:(NSA*)messages {
-	[self willChangeValueForKey:@"messages"];
-	_messages = NSA.new;
-	[self didChangeValueForKey:@"messages"];
+- (void) setMessages:(NSA*)messages
+{
 	[messages each:^(id object){
-		[[NSThread mainThread]performBlock:^{
-			
+//		[_q addOperationWithBlock:^{
+
 			BOOL canya = [object fetchBodyStructure];
+//			NSLog(@"props: %@", [object classPropertiesAndTypes]);// propertiesPlease]);
 			NSLog(@"can fetch body:%@  for %@", StringFromBOOL(canya), object);
-			!canya ?: [self willChangeValueForKey:@"messages"];
-			_messages = [_messages arrayByAddingObject:object];
-			!canya ?: [self didChangeValueForKey:@"messages"];
-		}];
+			if (canya) [self insertObject:object inMessagesAtIndex:_messages.count];// i arrayByAddingObject:object];
+//			!canya ?: [self didChangeValueForKey:@"messages"];
+//		}];
 	}];
 
 }
@@ -77,6 +74,15 @@
 ////        [messa/gesProxy addObject:msg];
 //    }];
 }
+
+
+- (NSUI)countOfMessages											{	return self.messages.count; 				}
+
+- (id)objectInMessagesAtIndex:(NSUI)index						{	return self.messages[index];	 			}
+
+- (void)removeObjectFromMessagesAtIndex:(NSUI)index 				{ 	[self.messages removeObjectAtIndex:index];	}
+
+- (void)insertObject:(CTCoreMessage *)object inMessagesAtIndex:(NSUI)index { self.messages[index] = object; 		}
 
 
 @end

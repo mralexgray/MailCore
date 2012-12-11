@@ -36,6 +36,6 @@
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, strong, readonly) NSArray *flags;
 
-- (void)addFlag:(NSString *)flag;
+- (void)addFlag: (NSString*)flag;
 
 @end

@@ -1,33 +1,4 @@
-/*
- * MailCore
- *
- * Copyright (C) 2007 - Matt Ronge
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the MailCore project nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
 
 #import <libetpan/libetpan.h>
 #import <libetpan/imapdriver_tools.h>
@@ -40,9 +11,8 @@
 
 #include <unistd.h>
 
-
 //int imap_fetch_result_to_envelop_list(clist * fetch_result, struct mailmessage_list * env_list);
-//
+
 int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result,
                         mailsession * session, mailmessage_driver * driver);
 
@@ -52,52 +22,39 @@ int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result
 static const int MAX_PATH_SIZE = 1024;
 
 @implementation CTCoreFolder
-@synthesize lastError, parentAccount=myAccount, idling;
+@synthesize lastError, parentAccount=myAccount, idling, path = myPath;
 
-- (id)initWithPath:(NSString *)path inAccount:(CTCoreAccount *)account; {
+- (id)initWithPath: (NSString*)path inAccount:(CTCoreAccount *)account; {
     struct mailstorage *storage = (struct mailstorage *)[account storageStruct];
-    self = [super init];
-    if (self)
-    {
-        myPath = [path retain];
-        connected = NO;
-        myAccount = [account retain];
-        
-        char buffer[MAX_PATH_SIZE];
-        myFolder = mailfolder_new(storage, [self getUTF7String:buffer fromString:myPath], NULL);
-        if (!myFolder) {
-            return nil;
-        }
-    }
+	if (self != super.init ) return nil;
+	myPath = [path retain];
+	connected = NO;
+	myAccount = [account retain];
+	char buffer[MAX_PATH_SIZE];
+	myFolder = mailfolder_new(storage, [self getUTF7String:buffer fromString:myPath], NULL);
+	if (!myFolder) return nil;
     return self;
 }
 
-
-- (void)dealloc {	
-    if (connected)
-        [self disconnect];
-
+- (void)dealloc
+{
+    if (connected)  [self disconnect];
     mailfolder_free(myFolder);
-    [myAccount release];
-    [myPath release];
+    [myAccount 	release];
+    [myPath 	release];
     self.lastError = nil;
     [super dealloc];
 }
 
-
-- (const char *)getUTF7String:(char *)buffer fromString:(NSString *)str {
-    if (CFStringGetCString((CFStringRef)str, buffer, MAX_PATH_SIZE, kCFStringEncodingUTF7_IMAP)) {
-        return buffer;
-    }
-    else {
-        return NULL;
-    }
+- (const char *)getUTF7String:(char *)buffer fromString: (NSString*)str
+{
+    return (CFStringGetCString((CFStringRef)str, buffer, MAX_PATH_SIZE, kCFStringEncodingUTF7_IMAP)) ? buffer : NULL;
 }
 
-
-- (BOOL)connect {
+- (BOOL) connect
+{
     int err = MAIL_NO_ERROR;
-    err =  mailfolder_connect(myFolder);
+        err = mailfolder_connect(myFolder);
     if (err != MAILIMAP_NO_ERROR) {
         self.lastError = MailCoreCreateErrorFromIMAPCode(err);
         return NO;
@@ -106,52 +63,34 @@ static const int MAX_PATH_SIZE = 1024;
     return YES;
 }
 
+- (void)disconnect {    if (connected)        mailfolder_disconnect(myFolder);	}
 
-- (void)disconnect {
-    if (connected)
-        mailfolder_disconnect(myFolder);
-}
+- (NSError *)lastError {    return lastError;	}
 
-- (NSError *)lastError {
-    return lastError;
-}
-
-- (NSString *)path {
-    return myPath;
-}
-
-- (BOOL)setPath:(NSString *)path; {
+//- (BOOL) setPath: (NSString*)path;
+- (void) setPath: (NSString*)path;
+{
     int err;
 
     BOOL success = [self connect];
-    if (!success) {
-        return NO;
-    }
-
+    if (!success) 	return;// NO;
     success = [self unsubscribe];
-    if (!success) {
-        return NO;
-    }
-    
+    if (!success) return;// NO;
     char newPath[MAX_PATH_SIZE];
     [self getUTF7String:newPath fromString:path];
-    
     char oldPath[MAX_PATH_SIZE];
     [self getUTF7String:newPath fromString:myPath];
-    
     err =  mailimap_rename([myAccount session], oldPath, newPath);
     
     if (err != MAILIMAP_NO_ERROR) {
         self.lastError = MailCoreCreateErrorFromIMAPCode(err);
-        return NO;
+        return;// NO;
     }
-    
     [path retain];
     [myPath release];
     myPath = path;
-    
-    success = [self subscribe];
-    return success;
+	success = [self subscribe];
+//    return success;
 }
 
 - (CTIdleResult)idleWithTimeout:(NSUInteger)timeout {
@@ -242,7 +181,7 @@ static const int MAX_PATH_SIZE = 1024;
     }
 }
 
-- (BOOL)create {
+- (BOOL) create {
     int err;
     
     char path[MAX_PATH_SIZE];
@@ -262,7 +201,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)delete {
+- (BOOL) delete {
     int err;
     
     char path[MAX_PATH_SIZE];
@@ -286,7 +225,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)subscribe {
+- (BOOL) subscribe {
     int err;
     
     char path[MAX_PATH_SIZE];
@@ -306,7 +245,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)unsubscribe {
+- (BOOL) unsubscribe {
     int err;
     
     char path[MAX_PATH_SIZE];
@@ -324,7 +263,7 @@ static const int MAX_PATH_SIZE = 1024;
     return YES;
 }
 
-- (BOOL) appendMessage: (CTCoreMessage *) msg
+- (BOOL)  appendMessage: (CTCoreMessage *) msg
 {
     int err = MAILIMAP_NO_ERROR;
     NSString *msgStr = [msg render];
@@ -368,7 +307,7 @@ static const int MAX_PATH_SIZE = 1024;
     return 0;
 }
 
-- (BOOL)check {
+- (BOOL) check {
     BOOL success = [self connect];
     if (!success) {
         return NO;
@@ -382,7 +321,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)sequenceNumberForUID:(NSUInteger)uid sequenceNumber:(NSUInteger *)sequenceNumber {
+- (BOOL) sequenceNumberForUID:(NSUInteger)uid sequenceNumber:(NSUInteger *)sequenceNumber {
     int r;
     struct mailimap_fetch_att * fetch_att;
     struct mailimap_fetch_type * fetch_type;
@@ -674,7 +613,7 @@ static const int MAX_PATH_SIZE = 1024;
     By not including these methods, CTCoreMessage doesn't depend on CTCoreFolder anymore. CTCoreFolder
     already depends on CTCoreMessage so we aren't adding any dependencies here. */
 
-- (BOOL)flagsForMessage:(CTCoreMessage *)msg flags:(NSUInteger *)flags {
+- (BOOL) flagsForMessage:(CTCoreMessage *)msg flags:(NSUInteger *)flags {
     BOOL success = [self connect];
     if (!success) {
         return NO;
@@ -693,7 +632,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)setFlags:(NSUInteger)flags forMessage:(CTCoreMessage *)msg {
+- (BOOL) setFlags:(NSUInteger)flags forMessage:(CTCoreMessage *)msg {
     BOOL success = [self connect];
     if (!success) {
         return NO;
@@ -715,7 +654,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)expunge {
+- (BOOL) expunge {
     int err;
     BOOL success = [self connect];
     if (!success) {
@@ -729,7 +668,7 @@ static const int MAX_PATH_SIZE = 1024;
     return YES;
 }
 
-- (BOOL)copyMessageWithUID:(NSUInteger)uid toPath:(NSString *)path {
+- (BOOL) copyMessageWithUID:(NSUInteger)uid toPath: (NSString*)path {
     BOOL success = [self connect];
     if (!success) {
         return NO;
@@ -744,7 +683,7 @@ static const int MAX_PATH_SIZE = 1024;
     return YES;
 }
 
-- (BOOL)moveMessageWithUID:(NSUInteger)uid toPath:(NSString *)path {
+- (BOOL) moveMessageWithUID:(NSUInteger)uid toPath: (NSString*)path {
     BOOL success = [self connect];
     if (!success) {
         return NO;
@@ -759,7 +698,7 @@ static const int MAX_PATH_SIZE = 1024;
     return YES;
 }
 
-- (BOOL)unreadMessageCount:(NSUInteger *)unseenCount {
+- (BOOL) unreadMessageCount:(NSUInteger *)unseenCount {
     unsigned int junk;
     int err;
 
@@ -776,7 +715,7 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL)totalMessageCount:(NSUInteger *)totalCount {
+- (BOOL) totalMessageCount:(NSUInteger *)totalCount {
     BOOL success = [self connect];
     if (!success) {
         return NO;

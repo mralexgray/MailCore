@@ -34,7 +34,7 @@
 
 @interface CTMIME_HtmlPart : CTMIME_SinglePart {
 }
-+ (id)mimeTextPartWithString:(NSString *)str;
-- (id)initWithString:(NSString *)string;
-- (void)setString:(NSString *)str;
++ (id)mimeTextPartWithString: (NSString*)str;
+- (id)initWithString: (NSString*)string;
+- (void)setString: (NSString*)str;
 @end

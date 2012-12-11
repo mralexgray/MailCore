@@ -69,9 +69,9 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 @synthesize serverSettings = mServerSettings;
 @synthesize status = mStatus;
 
-- (id)initWithServer:(NSString *)aServer
-            username:(NSString *)aUsername
-            password:(NSString *)aPassword
+- (id)initWithServer: (NSString*)aServer
+            username: (NSString*)aUsername
+            password: (NSString*)aPassword
                 port:(unsigned int)aPort
               useTLS:(BOOL)aTls
              useAuth:(BOOL)aAuth
@@ -151,7 +151,7 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
     mSMTP = NULL;
 }
 
-- (BOOL)isBusy {
+- (BOOL) isBusy {
     return (mMailThread != nil && [mMailThread isExecuting]);
 }
 

@@ -17,6 +17,6 @@
 @property (NATOM, STRNG) CTCoreAccount	*myAccount;
 @property (NATOM, STRNG) CTCoreFolder	*inbox;
 
-@property (NATOM, STRNG) NSA *messages;
+@property (NATOM, STRNG) NSMA *messages;
 @property (NATOM, STRNG) NSOQ *q;
 @end

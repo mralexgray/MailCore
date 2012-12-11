@@ -63,9 +63,9 @@
 @property (retain) CTCoreMessage* message;
 @property (readonly) CTSMTPAsyncStatus status;
 
-- (id)initWithServer:(NSString *)aServer 
-            username:(NSString *)aUsername
-            password:(NSString *)aPassword 
+- (id)initWithServer: (NSString*)aServer 
+            username: (NSString*)aUsername
+            password: (NSString*)aPassword 
                 port:(unsigned int)aPort 
               useTLS:(BOOL)aTls 
              useAuth:(BOOL)aAuth
@@ -74,6 +74,6 @@
 
 - (void)sendMessageInBackgroundAndNotify:(CTCoreMessage*)aMessage;
 - (void)cancel;
-- (BOOL)isBusy;
+- (BOOL) isBusy;
 
 @end

@@ -36,11 +36,11 @@
 
 @implementation CTMIME_HtmlPart
 
-+ (id)mimeTextPartWithString:(NSString *)str {
++ (id)mimeTextPartWithString: (NSString*)str {
     return [[[CTMIME_HtmlPart alloc] initWithString:str] autorelease];
 }
 
-- (id)initWithString:(NSString *)string {
+- (id)initWithString: (NSString*)string {
     self = [super init];
     if (self) {
         [self setString:string];
@@ -78,7 +78,7 @@
     }
 }
 
-- (void)setString:(NSString *)str {
+- (void)setString: (NSString*)str {
     self.data = [str dataUsingEncoding:NSUTF8StringEncoding];
     // The data is all local, so we don't want it to do any fetching
     self.fetched = YES;
