@@ -85,17 +85,13 @@
 	mmap_string_free(str);
 	mime -> mm_data.mm_message.mm_fields = NULL;
 	mailmime_free(mime);
-	return [resultStr autorelease];
+	return resultStr;
 }
 
 - (CTMIME_Enumerator *)mimeEnumerator {
 	CTMIME_Enumerator *enumerator;
 	enumerator = [[CTMIME_Enumerator alloc] initWithMIME:self];
-	return [enumerator autorelease];
+	return enumerator;
 }
 
-- (void)dealloc {
-	[mContentType release];
-	[super dealloc];
-}
 @end

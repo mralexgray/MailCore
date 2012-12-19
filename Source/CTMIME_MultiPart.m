@@ -9,7 +9,7 @@
 
 @implementation CTMIME_MultiPart
 + (id)mimeMultiPart {
-	return [[[CTMIME_MultiPart alloc] init] autorelease];
+	return [[CTMIME_MultiPart alloc] init];
 }
 
 - (id)initWithMIMEStruct:(struct mailmime *)mime forMessage:(struct mailmessage *)message {
@@ -36,10 +36,6 @@
 	return self;
 }
 
-- (void)dealloc {
-	[myContentList release];
-	[super dealloc];
-}
 
 - (void)addMIMEPart:(CTMIME *)mime {
 	[myContentList addObject:mime];

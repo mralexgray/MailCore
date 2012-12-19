@@ -48,8 +48,4 @@
 	return mime;
 }
 
-- (void)dealloc {
-	[mToVisit release];
-	[super dealloc];
-}
 @end

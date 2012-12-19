@@ -13,7 +13,7 @@
 }
 /*
  If an error occurred (nil or return of NO) call this method to get the error	*/
-@property(nonatomic, retain) NSError *lastError;
+@property(nonatomic, strong) NSError *lastError;
 
 - (id)initWithResource:(mailsmtp *)smtp;
 - (BOOL) connectToServer: (NSString*)server port:(unsigned int)port;

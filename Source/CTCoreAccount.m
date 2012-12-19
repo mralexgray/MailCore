@@ -132,13 +132,12 @@
 		if (selectable) {
 			mailboxName = mailboxStruct -> mb_name;
 			// Per RFC 3501, mailbox names must use 7-bit enconding (UTF-7).
-			mailboxNameObject = (NSString*)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
+			mailboxNameObject = (NSString*)CFBridgingRelease(CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP));
 
 			self.pathDelimiter = mailboxStruct -> mb_delimiter ?
 				[NSString stringWithFormat:@"%c", mailboxStruct -> mb_delimiter] :
 				@"/";
 			[subscribedFolders addObject:mailboxNameObject];
-			[mailboxNameObject release];
 		}
 	}
 	mailimap_list_result_free(subscribedList);
@@ -172,13 +171,12 @@
 		if (selectable) {
 			mailboxName = mailboxStruct -> mb_name;
 			// Per RFC 3501, mailbox names must use 7-bit enconding (UTF-7).
-			mailboxNameObject = (NSString*)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
+			mailboxNameObject = (NSString*)CFBridgingRelease(CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP));
 			
 			self.pathDelimiter = mailboxStruct -> mb_delimiter ?
 				[NSString stringWithFormat:@"%c", mailboxStruct -> mb_delimiter] :
 				@"/";
 			[allFolders addObject:mailboxNameObject];
-			[mailboxNameObject release];
 		}
 	}
 	mailimap_list_result_free(allList);
@@ -211,7 +209,7 @@
 		if (selectable) {
 			mailboxName = mailboxStruct -> mb_name;
 			// Per RFC 3501, mailbox names must use 7-bit enconding (UTF-7).
-			mailboxNameObject = (NSString*)CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP);
+			mailboxNameObject = (NSString*)CFBridgingRelease(CFStringCreateWithCString(NULL, mailboxName, kCFStringEncodingUTF7_IMAP));
 			
 			self.pathDelimiter = mailboxStruct -> mb_delimiter ?
 				[NSString stringWithFormat:@"%c", mailboxStruct -> mb_delimiter] :
@@ -219,19 +217,16 @@
 			
 			listResult = CTXlistResult.new;
 			listResult.name = mailboxNameObject;
-			[mailboxNameObject release];
 			
 			if (flags) {
 				for (flagIter = clist_begin( flags -> mbf_oflags); flagIter != NULL; flagIter = flagIter -> next) {
 					oflagStruct 	= flagIter -> data;
 					flagName 		= oflagStruct -> of_flag_ext;
-					flagNameObject 	= (NSString*)CFStringCreateWithCString(NULL, flagName, kCFStringEncodingUTF7_IMAP);
+					flagNameObject 	= (NSString*)CFBridgingRelease(CFStringCreateWithCString(NULL, flagName, kCFStringEncodingUTF7_IMAP));
 					[listResult addFlag:flagNameObject];
-					[flagNameObject release];
 				}
 			}
 			[allFolders addObject:listResult];
-			[listResult release];
 		}
 	}
 	mailimap_list_result_free(allList);
@@ -242,9 +237,6 @@
 {
 	mailstorage_disconnect(myStorage);
 	mailstorage_free(myStorage);
-	self.lastError = nil;
-	self.pathDelimiter = nil;
-	[super dealloc];
 }
 
 @end

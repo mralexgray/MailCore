@@ -8,8 +8,8 @@
 @interface CTMIME : NSObject {
 	NSString *mContentType;
 }
-@property(nonatomic, retain) NSString *contentType;
-@property(nonatomic, readonly) id content;
+@property(nonatomic, strong) NSString *contentType;
+@property(unsafe_unretained, nonatomic, readonly) id content;
 
 - (id)initWithMIMEStruct:(struct mailmime *)mime 
 		forMessage:(struct mailmessage *)message;

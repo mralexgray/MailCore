@@ -28,9 +28,9 @@ static const int MAX_PATH_SIZE = 1024;
 {
 	struct mailstorage *storage = (struct mailstorage *)[account storageStruct];
 	if (self != super.init ) return nil;
-	myPath 		= [path retain];
+	myPath 		= path;
 	connected 	= NO;
-	myAccount 	= [account retain];
+	myAccount 	= account;
 	char buffer[MAX_PATH_SIZE];
 	myFolder 	= mailfolder_new(storage, [self getUTF7String:buffer fromString:myPath], NULL);
 	if (!myFolder) return nil;
@@ -41,10 +41,6 @@ static const int MAX_PATH_SIZE = 1024;
 {
 	if (connected)  [self disconnect];
 	mailfolder_free(myFolder);
-	[myAccount 	release];
-	[myPath 	release];
-	self.lastError = nil;
-	[super dealloc];
 }
 
 - (const char *)getUTF7String:(char*)buffer fromString: (NSS*)str
@@ -85,8 +81,6 @@ static const int MAX_PATH_SIZE = 1024;
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return;// NO;
 	}
-	[path retain];
-	[myPath release];
 	myPath = path;
 	success = [self subscribe];
 //	return success;
@@ -532,7 +526,6 @@ static const int MAX_PATH_SIZE = 1024;
 			[msgObject setBodyStructure:new_body];
 		}
 		[messages addObject:msgObject];
-		[msgObject release];
 
 		fetchResultIter = clist_next(fetchResultIter);
 	}
@@ -587,7 +580,7 @@ static const int MAX_PATH_SIZE = 1024;
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return nil;
 	}
-	CTCoreMessage *msg = [[CTCoreMessage.alloc initWithMessageStruct:msgStruct] autorelease];
+	CTCoreMessage *msg = [CTCoreMessage.alloc initWithMessageStruct:msgStruct];
 	msg.parentFolder = self;
 	return msg;
 }

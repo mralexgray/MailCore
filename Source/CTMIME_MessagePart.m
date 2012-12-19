@@ -8,7 +8,7 @@
 
 @implementation CTMIME_MessagePart
 + (id)mimeMessagePartWithContent:(CTMIME *)mime {
-	return [[[CTMIME_MessagePart alloc] initWithContent:mime] autorelease];
+	return [[CTMIME_MessagePart alloc] initWithContent:mime];
 }
 
 - (id)initWithMIMEStruct:(struct mailmime *)mime 
@@ -16,8 +16,8 @@
 	self = [super initWithMIMEStruct:mime forMessage:message];
 	if (self) {
 		struct mailmime *content = mime -> mm_data.mm_message.mm_msg_mime;
-		myMessageContent = [[CTMIMEFactory createMIMEWithMIMEStruct:content
-														 forMessage:message] retain];
+		myMessageContent = [CTMIMEFactory createMIMEWithMIMEStruct:content
+														 forMessage:message];
 		myFields = mime -> mm_data.mm_message.mm_fields;
 	}
 	return self;
@@ -31,14 +31,8 @@
 	return self;
 }
 
-- (void)dealloc {
-	[myMessageContent release];
-	[super dealloc];
-}
 
 - (void)setContent:(CTMIME *)aContent {
-	[aContent retain];
-	[myMessageContent release];
 	myMessageContent = aContent;
 }
 

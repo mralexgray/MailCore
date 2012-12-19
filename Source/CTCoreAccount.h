@@ -16,21 +16,21 @@
 }
 
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
-@property(nonatomic, retain) NSError *lastError;
-@property(nonatomic, retain) NSString *pathDelimiter;
+@property(nonatomic, strong) NSError *lastError;
+@property(nonatomic, strong) NSString *pathDelimiter;
 
 /**	Retrieves the list of all the available folders from the server.
 	@return Returns a NSSet which contains NSStrings of the folders pathnames, nil on error	*/
-@property (readonly) NSSet *allFolders;
+@property (weak, readonly) NSSet *allFolders;
 
 /**	Retrieves the list of all the available folders from the server using the extended list command (XLIST).
 	This is only supported by Gmail.
 	@return Returns a NSSet which contains CTXlistResults, nil on error	*/
-@property (readonly) NSSet *allFoldersExtended;
+@property (weak, readonly) NSSet *allFoldersExtended;
 
 /**	Retrieves a list of only the subscribed folders from the server.
 	@return Returns a NSSet which contains NSStrings of the folders pathnames, nil on error	*/
-@property (readonly) NSSet *subscribedFolders;
+@property (weak, readonly) NSSet *subscribedFolders;
 
 /**	If you have the path of a folder on the server use this method to retrieve just the one folder.
 	@param path A NSString specifying the path of the folder to retrieve from the server.

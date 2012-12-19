@@ -24,12 +24,12 @@
 														  forMessage:message];
 			break;
 		case MAILMIME_MULTIPLE:
-			return [[[CTMIME_MultiPart alloc] initWithMIMEStruct:mime
-													 forMessage:message] autorelease];
+			return [[CTMIME_MultiPart alloc] initWithMIMEStruct:mime
+													 forMessage:message];
 			break;
 		case MAILMIME_MESSAGE:
-			return [[[CTMIME_MessagePart alloc] initWithMIMEStruct:mime
-														forMessage:message] autorelease];
+			return [[CTMIME_MessagePart alloc] initWithMIMEStruct:mime
+														forMessage:message];
 			break;
 	}
 	return NULL;
@@ -53,6 +53,6 @@
 														 forMessage:message];
 			break;
 	}
-	return [content autorelease];
+	return content;
 }
 @end 

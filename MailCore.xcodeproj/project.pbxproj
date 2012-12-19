@@ -12,7 +12,7 @@
 		0F369D04162DF5030043A3ED /* CTXlistResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F369D02162DF5030043A3ED /* CTXlistResult.m */; };
 		0FFA954C16559D4F00A89EA0 /* CTXlistResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F369D02162DF5030043A3ED /* CTXlistResult.m */; };
 		2D538B45119803A6000AB4A2 /* CTSMTPAsyncConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D538B42119803A6000AB4A2 /* CTSMTPAsyncConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2D538B46119803A6000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; };
+		2D538B46119803A6000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		2D538B48119803E2000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; };
 		7B596040168131730017A3E4 /* AtoZCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B59603F168131730017A3E4 /* AtoZCore.framework */; };
 		7BDFE2B1167A38FA00BC5C53 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BDFE2B0167A38FA00BC5C53 /* AddressBook.framework */; };
@@ -22,7 +22,7 @@
 		F81A8ADE0C03FC3B002F780A /* CTMIME_MultiPart.h in Headers */ = {isa = PBXBuildFile; fileRef = F81A8AD40C03FC3B002F780A /* CTMIME_MultiPart.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F81A8ADF0C03FC3B002F780A /* CTMIME_MultiPart.m in Sources */ = {isa = PBXBuildFile; fileRef = F81A8AD50C03FC3B002F780A /* CTMIME_MultiPart.m */; };
 		F81A8AE00C03FC3B002F780A /* CTMIME_SinglePart.h in Headers */ = {isa = PBXBuildFile; fileRef = F81A8AD60C03FC3B002F780A /* CTMIME_SinglePart.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F81A8AE10C03FC3B002F780A /* CTMIME_SinglePart.m in Sources */ = {isa = PBXBuildFile; fileRef = F81A8AD70C03FC3B002F780A /* CTMIME_SinglePart.m */; };
+		F81A8AE10C03FC3B002F780A /* CTMIME_SinglePart.m in Sources */ = {isa = PBXBuildFile; fileRef = F81A8AD70C03FC3B002F780A /* CTMIME_SinglePart.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F81A8AE20C03FC3B002F780A /* CTMIME_TextPart.h in Headers */ = {isa = PBXBuildFile; fileRef = F81A8AD80C03FC3B002F780A /* CTMIME_TextPart.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F81A8AE30C03FC3B002F780A /* CTMIME_TextPart.m in Sources */ = {isa = PBXBuildFile; fileRef = F81A8AD90C03FC3B002F780A /* CTMIME_TextPart.m */; };
 		F81A8AE40C03FC3B002F780A /* CTMIME.h in Headers */ = {isa = PBXBuildFile; fileRef = F81A8ADA0C03FC3B002F780A /* CTMIME.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -964,6 +964,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -995,7 +996,7 @@
 					0xb0000000,
 				);
 				PRODUCT_NAME = MailCore;
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 				ZERO_LINK = YES;
@@ -1006,6 +1007,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1034,7 +1036,7 @@
 					0xb0000000,
 				);
 				PRODUCT_NAME = MailCore;
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = framework;

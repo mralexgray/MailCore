@@ -4,7 +4,7 @@
 
 @interface CTXlistResult : NSObject
 
-@property (nonatomic, retain) 			NSString *name;
+@property (nonatomic, strong) 			NSString *name;
 @property (nonatomic, strong, readonly) NSArray *flags;
 
 - (void)addFlag: (NSString*)flag;

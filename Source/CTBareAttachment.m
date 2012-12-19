@@ -14,7 +14,7 @@
 - (id)initWithMIMESinglePart:(CTMIME_SinglePart *)part {
 	self = [super init];
 	if (self) {
-		mMIMEPart = [part retain];
+		mMIMEPart = part;
 		self.filename = mMIMEPart.filename;
 		self.contentType = mMIMEPart.contentType;
 	}
@@ -38,17 +38,11 @@
 	[mMIMEPart fetchPartWithProgress:block];
 	CTCoreAttachment *attach = [[CTCoreAttachment alloc] initWithData:mMIMEPart.data
 														  contentType:self.contentType filename:self.filename];
-	return [attach autorelease];
+	return attach;
 }
 
 - (CTMIME_SinglePart *)part {
 	return mMIMEPart;
 }
 
-- (void)dealloc {
-	[mMIMEPart release];
-	[mFilename release];
-	[mContentType release];
-	[super dealloc];
-}
 @end

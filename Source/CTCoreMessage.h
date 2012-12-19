@@ -69,9 +69,9 @@ Only used when sending e-mail	*/
 @property (nonatomic, strong) NSString* subject;
 
 /**	Returns the date as given in the Date mail field	*/
-@property (readonly) NSString *displayDate;
+@property (weak, readonly) NSString *displayDate;
 /**	Returns the date as given in the Date mail field	*/
-@property (readonly) NSDate *senderDate;
+@property (weak, readonly) NSDate *senderDate;
 /**	Returns YES if the message is unread.	*/
 @property (readonly) BOOL isUnread;
 /**	Returns YES if the message is recent and unread.	*/
@@ -79,7 +79,7 @@ Only used when sending e-mail	*/
 /**	Returns YES if the message is starred (flagged in IMAP terms).	*/
 @property (readonly) BOOL isStarred;
 /**	A machine readable ID that is guaranteed unique by the host that generated the message	*/
-@property (readonly) NSString *messageId;
+@property (weak, readonly) NSString *messageId;
 /**	Returns an NSUInteger containing the messages UID. This number is unique across sessions	*/
 @property (readonly) NSUInteger uid;
 /**	Returns the message sequence number, this number cannot be used across sessions	*/
@@ -96,9 +96,9 @@ This will NOT set any thing on the server.
  This is used to assign sequence numbers after retrieving the message list.	*/
 - (void)setSequenceNumber:(NSUInteger)sequenceNumber;
 
-@property (readonly) NSImage *favicon;
-@property (readonly) NSString *fromDomain;
-@property (readonly) NSString *fromString;
+@property (weak, readonly) NSImage *favicon;
+@property (weak, readonly) NSString *fromDomain;
+@property (weak, readonly) NSString *fromString;
 @property (nonatomic, strong) NSSet *from;
 /**	Parses the from list, the result is an NSSet containing CTCoreAddress's	*/
 //- (NSSet *)from;

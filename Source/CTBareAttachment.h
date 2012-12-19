@@ -11,9 +11,9 @@
 	NSString *mFilename;
 	NSString *mContentType;
 }
-@property(retain) NSString *filename;
-@property(retain) NSString *contentType;
-@property(readonly) CTMIME_SinglePart *part;
+@property(strong) NSString *filename;
+@property(strong) NSString *contentType;
+@property(weak, readonly) CTMIME_SinglePart *part;
 
 -(NSString*)decodedFilename;
 - (id)initWithMIMESinglePart:(CTMIME_SinglePart *)part;

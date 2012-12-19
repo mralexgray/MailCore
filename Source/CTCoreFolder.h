@@ -16,8 +16,8 @@
 	int 				idlePipe[2];
 }
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
-@property (nonatomic, retain) NSError *lastError;
-@property (nonatomic, retain) CTCoreAccount *parentAccount;
+@property (nonatomic, strong) NSError *lastError;
+@property (nonatomic, strong) CTCoreAccount *parentAccount;
 
 /**	This method is used to initialize a folder. This method or the method in CTCoreAccount folderWithPath can be used to setup a folder.
  	@param inAccount This parameter must be passed in so the folder can initiate it's connection.	*/

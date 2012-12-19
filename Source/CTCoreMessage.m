@@ -7,6 +7,7 @@
 #import "CTCoreAddress.h"
 #import "CTMIMEFactory.h"
 #import "CTMIME_MessagePart.h"
+#import "CTMIME_Enumerator.h"
 #import "CTMIME_TextPart.h"
 #import "CTMIME_MultiPart.h"
 #import "CTMIME_SinglePart.h"
@@ -69,9 +70,8 @@
 	}
 	
 	CTMIME *oldMIME = myParsedMIME;
-	myParsedMIME = [[CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
-						forMessage:[self messageStruct]] retain];
-	[oldMIME release];
+	myParsedMIME = [CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
+						forMessage:[self messageStruct]];
 	return YES;
 }
 
@@ -79,9 +79,8 @@
 {
 	CTMIME *oldMIME = myParsedMIME;
 	myMessage -> msg_mime = mime;
-	myParsedMIME = [[CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
-												 forMessage:[self messageStruct]] retain];
-	[oldMIME release];
+	myParsedMIME = [CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
+												 forMessage:[self messageStruct]];
 }
 
 - (void)setFields:(struct mailimf_fields *)fields
@@ -202,8 +201,7 @@
 		[(CTMIME_MultiPart *)myParsedMIME addMIMEPart:text];
 	} else {
 		CTMIME_MessagePart *messagePart = [CTMIME_MessagePart mimeMessagePartWithContent:text];
-		myParsedMIME = [messagePart retain];
-		[oldMIME release];
+		myParsedMIME = messagePart;
 	}
 }
 
@@ -212,8 +210,7 @@
 	CTMIME *oldMIME 				= myParsedMIME;
 	CTMIME_HtmlPart *text 			= [CTMIME_HtmlPart mimeTextPartWithString:body];
 	CTMIME_MessagePart *messagePart = [CTMIME_MessagePart mimeMessagePartWithContent:text];
-	myParsedMIME 					= [messagePart retain];
-	[oldMIME release];	
+	myParsedMIME 					= messagePart;
 }
 
 - (NSArray *)attachments
@@ -228,7 +225,6 @@
 				CTBareAttachment *attach = [[CTBareAttachment alloc]
 												initWithMIMESinglePart:singlePart];
 				[attachments addObject:attach];
-				[attach release];
 			}
 		}
 	}
@@ -360,7 +356,6 @@
 	if (myMessage -> msg_uid) {
 		NSString *uidString = [[NSString alloc] initWithCString:myMessage -> msg_uid encoding:NSASCIIStringEncoding];
 		NSUInteger uid = (NSUInteger)[[[uidString componentsSeparatedByString:@"-"] objectAtIndex:1] intValue];
-		[uidString release];
 		return uid;
 	}
 	return 0;
@@ -405,7 +400,7 @@
 + (NSSet*) keyPathsForValuesAffectingFromString { return [NSSet setWithArray:@[@"from"]]; }
 
 - (NSString*)fromString {
-	__block NSMutableString *names = NSMutableString.new;
+	__weak NSMutableString *names = NSMutableString.new;
 	__block NSUInteger numberOfNames = self.from.count;
 	[self.from enumerateObjectsUsingBlock:^(CTCoreAddress* obj, BOOL *stop) {
 
@@ -598,7 +593,7 @@
 		return nil;
 	}
 	mailimap_msg_att_rfc822_free(result);
-	return [nsresult autorelease];
+	return nsresult;
 }
 
 - (NSString*)rfc822Header
@@ -613,7 +608,7 @@
 		return nil;
 	}
 	mailimap_msg_att_rfc822_free(result);
-	return [nsresult autorelease];
+	return nsresult;
 }
 
 - (BOOL) isEqual:(id)object
@@ -750,7 +745,6 @@
 		string = clist_content(iter);
 		NSString *strObj = [[NSString alloc] initWithUTF8String:string];
 		[stringSet addObject:strObj];
-		[strObj release];
 	}
 	
 	return stringSet;
@@ -774,10 +768,6 @@
 	}
 	if (myFields != NULL)   mailimf_single_fields_free(myFields);
 
-	self.lastError 		= nil;
-	self.parentFolder 	= nil;
-	[myParsedMIME release];
-	[super dealloc];
 }
 
 @end

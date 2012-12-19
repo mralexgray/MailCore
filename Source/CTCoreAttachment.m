@@ -42,9 +42,5 @@
 
 - (BOOL) writeToFile: (NSString*)path {	return [mData writeToFile:path atomically:YES];	}
 
-- (void)dealloc {
-	[mData release];
-	[super dealloc];
-}
 
 @end

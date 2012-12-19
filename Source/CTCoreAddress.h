@@ -20,8 +20,8 @@
 /**	Returns/sets the e-mail as a NSString	*/
 @property (nonatomic, strong) NSString	*email;
 // added by Gabor
-@property (readonly) 		  NSString *decodedName;
-@property (readonly) 		  NSString *domain;
+@property (weak, readonly) 		  NSString *decodedName;
+@property (weak, readonly) 		  NSString *domain;
 
 //@property (strong, nonatomic) Ad
 

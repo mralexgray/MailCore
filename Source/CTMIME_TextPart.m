@@ -7,7 +7,7 @@
 
 @implementation CTMIME_TextPart
 + (id)mimeTextPartWithString: (NSString*)str {
-	return [[[CTMIME_TextPart alloc] initWithString:str] autorelease];
+	return [[CTMIME_TextPart alloc] initWithString:str];
 }
 
 - (id)initWithString: (NSString*)string {
@@ -36,7 +36,7 @@
 		NSString *str = @"";
 		if (r == MAIL_CHARCONV_NO_ERROR) {
 			NSData *newData = [NSData dataWithBytes:converted length:converted_len];
-			str = [[[NSString alloc] initWithData:newData encoding:NSUTF8StringEncoding] autorelease];
+			str = [[NSString alloc] initWithData:newData encoding:NSUTF8StringEncoding];
 		}
 		charconv_buffer_free(converted);
 		return str;
@@ -44,7 +44,7 @@
 		// Don't have a charset available so treat data as UTF-8
 		// This will happen when we are creating a msg and not decoding
 		// an existing one
-		return [[[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding] autorelease];
+		return [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
 	}
 }
 

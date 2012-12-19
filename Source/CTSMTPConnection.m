@@ -10,10 +10,12 @@
 #import "CTESMTP.h"
 
 //TODO Add more descriptive error messages using mailsmtp_strerror
+
 @implementation CTSMTPConnection
 + (BOOL)sendMessage:(CTCoreMessage *)message server: (NSString*)server username: (NSString*)username
 		   password: (NSString*)password port:(unsigned int)port connectionType:(CTSMTPConnectionType)connectionType
 			useAuth:(BOOL)auth error:(NSError **)error {
+
 	BOOL success;
 	mailsmtp *smtp = NULL;
 	smtp = mailsmtp_new(0, NULL);
@@ -24,62 +26,62 @@
 	} else if (connectionType == CTSMTPConnectionTypeTLS) {
 		success = [smtpObj connectWithTlsToServer:server port:port];
 	}
-	if (!success) {
+	{
+		if (!success) {
 		goto error;
-	}
-	if ([smtpObj helo] == NO) {
-		/* The server didn't support ESMTP, so switching to STMP */
-		[smtpObj release];
-		smtpObj = [[CTSMTP alloc] initWithResource:smtp];
-		success = [smtpObj helo];
+		}
+		if ([smtpObj helo] == NO) {
+			/* The server didn't support ESMTP, so switching to STMP */
+			smtpObj = [[CTSMTP alloc] initWithResource:smtp];
+			success = [smtpObj helo];
+			if (!success) {
+				goto error;
+			}
+		}
+		if (connectionType == CTSMTPConnectionTypeStartTLS) {
+			success = [smtpObj startTLS];
+			if (!success) {
+				goto error;
+			}
+		}
+		if (auth) {
+			success = [smtpObj authenticateWithUsername:username password:password server:server];
+			if (!success) {
+				goto error;
+			}
+		}
+
+		success = [smtpObj setFrom:[[[message from] anyObject] email]];
 		if (!success) {
 			goto error;
 		}
-	}
-	if (connectionType == CTSMTPConnectionTypeStartTLS) {
-		success = [smtpObj startTLS];
+
+		/* recipients */
+		NSMutableSet *rcpts = [NSMutableSet set];
+		[rcpts unionSet:[message to]];
+		[rcpts unionSet:[message bcc]];
+		[rcpts unionSet:[message cc]];
+		success = [smtpObj setRecipients:rcpts];
 		if (!success) {
 			goto error;
 		}
-	}
-	if (auth) {
-		success = [smtpObj authenticateWithUsername:username password:password server:server];
+
+		/* data */
+		success = [smtpObj setData:[message render]];
 		if (!success) {
 			goto error;
 		}
+		
+		mailsmtp_quit(smtp);
+		mailsmtp_free(smtp);
+		
+		return YES;
 	}
-
-	success = [smtpObj setFrom:[[[message from] anyObject] email]];
-	if (!success) {
-		goto error;
-	}
-
-	/* recipients */
-	NSMutableSet *rcpts = [NSMutableSet set];
-	[rcpts unionSet:[message to]];
-	[rcpts unionSet:[message bcc]];
-	[rcpts unionSet:[message cc]];
-	success = [smtpObj setRecipients:rcpts];
-	if (!success) {
-		goto error;
-	}
-
-	/* data */
-	success = [smtpObj setData:[message render]];
-	if (!success) {
-		goto error;
-	}
-	
-	mailsmtp_quit(smtp);
-	mailsmtp_free(smtp);
-	
-	[smtpObj release];
-	return YES;
 error:
 	*error = smtpObj.lastError;
-	[smtpObj release];
 	mailsmtp_free(smtp);
 	return NO;
+
 }
 
 + (BOOL)canConnectToServer: (NSString*)server username: (NSString*)username password: (NSString*)password
@@ -100,7 +102,6 @@ error:
   }
   if ([smtpObj helo] == NO) {
 	/* The server didn't support ESMTP, so switching to STMP */
-	[smtpObj release];
 	smtpObj = [[CTSMTP alloc] initWithResource:smtp];
 	success = [smtpObj helo];
 	if (!success) {
@@ -123,11 +124,9 @@ error:
   mailsmtp_quit(smtp);
   mailsmtp_free(smtp);
 	
-  [smtpObj release];
   return YES;
 error:
   *error = smtpObj.lastError;
-  [smtpObj release];
   mailsmtp_free(smtp);
   return NO;
 }

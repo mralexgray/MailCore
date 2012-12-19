@@ -8,7 +8,7 @@
 {
 	NSData *mData;
 }
-@property(retain) NSData *data;
+@property(strong) NSData *data;
 
 /**	Load the attachment from a local file
  	NOTE: This currently only works on Mac OS X, use initWithData:contentType:filename: instead on iOS	*/

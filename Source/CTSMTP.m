@@ -17,10 +17,6 @@
 	return self;
 }
 
-- (void)dealloc {
-	self.lastError = nil;
-	[super dealloc];
-}
 
 - (BOOL) connectToServer: (NSString*)server port:(unsigned int)port {
 	/* first open the stream */
