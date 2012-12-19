@@ -10,30 +10,27 @@
 
 @class CTCoreFolder;
 
-@interface CTCoreAccount : NSObject {
+@interface CTCoreAccount : NSObject
+{
 	struct mailstorage *myStorage;
-	BOOL connected;
-	NSError *lastError;
-	NSString *pathDelimiter;
 }
+
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
 @property(nonatomic, retain) NSError *lastError;
-
 @property(nonatomic, retain) NSString *pathDelimiter;
 
 /**	Retrieves the list of all the available folders from the server.
 	@return Returns a NSSet which contains NSStrings of the folders pathnames, nil on error	*/
-- (NSSet *)allFolders;
+@property (readonly) NSSet *allFolders;
 
 /**	Retrieves the list of all the available folders from the server using the extended list command (XLIST).
- This is only supported by Gmail.
-	@return Returns a NSSet which contains CTXlistResults, nil on error
- */
-- (NSSet *)allFoldersExtended;
+	This is only supported by Gmail.
+	@return Returns a NSSet which contains CTXlistResults, nil on error	*/
+@property (readonly) NSSet *allFoldersExtended;
 
 /**	Retrieves a list of only the subscribed folders from the server.
 	@return Returns a NSSet which contains NSStrings of the folders pathnames, nil on error	*/
-- (NSSet *)subscribedFolders;
+@property (readonly) NSSet *subscribedFolders;
 
 /**	If you have the path of a folder on the server use this method to retrieve just the one folder.
 	@param path A NSString specifying the path of the folder to retrieve from the server.
@@ -49,12 +46,12 @@
 	@param login The username to connect with.
 	@param password The password to use to connect.
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) connectToServer: (NSString*)server port:(int)port connectionType:(int)conType authType:(int)authType
-						login: (NSString*)login password: (NSString*)password;
+- (BOOL) connectToServer: (NSS*)server port:(int)port connectionType:(int)conType authType:(int)authType
+						login: (NSS*)login password: (NSS*)password;
 
 /**	This method returns the current connection status.
 	@return Returns YES or NO as the status of the connection.	*/
-- (BOOL) isConnected;
+@property (getter=isConnected) BOOL connected;
 
 /**	Terminates the connection. If you terminate this connection it will also affect the
  connectivity of CTCoreFolders and CTMessages that rely on this account.	*/
@@ -63,6 +60,6 @@
 - (NSSet *)capabilities;
 
 /* Intended for advanced use only */
-- (mailimap *)session;
-- (struct mailstorage *)storageStruct;
+- (mailimap*)			session;
+- (struct mailstorage*) storageStruct;
 @end

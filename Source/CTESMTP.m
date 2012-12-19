@@ -102,13 +102,13 @@ static int fill_local_ip_port(mailstream * stream, char * local_ip_port, size_t 
 	if (cUsername == NULL)
 		cUsername = "";
 
-	int ret = fill_local_ip_port([self resource]->stream, local_ip_port_buf, sizeof(local_ip_port_buf));
+	int ret = fill_local_ip_port([self resource] -> stream, local_ip_port_buf, sizeof(local_ip_port_buf));
 	if (ret < 0)
 		local_ip_port = NULL;
 	else
 		local_ip_port = local_ip_port_buf;
 
-	ret = fill_remote_ip_port([self resource]->stream, remote_ip_port_buf, sizeof(remote_ip_port_buf));
+	ret = fill_remote_ip_port([self resource] -> stream, remote_ip_port_buf, sizeof(remote_ip_port_buf));
 	if (ret < 0)
 		remote_ip_port = NULL;
 	else
@@ -116,10 +116,10 @@ static int fill_local_ip_port(mailstream * stream, char * local_ip_port, size_t 
 
 	char *authType = "PLAIN";
 	mailsmtp *session = [self resource];
-	if (session->auth & MAILSMTP_AUTH_CHECKED) {
+	if (session -> auth & MAILSMTP_AUTH_CHECKED) {
 		// If the server doesn't support PLAIN but does support the older LOGIN,
 		// fall back to LOGIN. This can happen with older servers like Exchange 2003
-		if (!(session->auth & MAILSMTP_AUTH_PLAIN) && session->auth & MAILSMTP_AUTH_LOGIN) {
+		if (!(session -> auth & MAILSMTP_AUTH_PLAIN) && session -> auth & MAILSMTP_AUTH_LOGIN) {
 			authType = "LOGIN";
 		}
 	}

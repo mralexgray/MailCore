@@ -22,16 +22,17 @@ int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result
 static const int MAX_PATH_SIZE = 1024;
 
 @implementation CTCoreFolder
-@synthesize lastError, parentAccount=myAccount, idling, path = myPath;
+@synthesize lastError, parentAccount = myAccount, idling, connected, path = myPath;
 
-- (id)initWithPath: (NSString*)path inAccount:(CTCoreAccount *)account; {
+- (id)initWithPath: (NSString*)path inAccount:(CTCoreAccount *)account;
+{
 	struct mailstorage *storage = (struct mailstorage *)[account storageStruct];
 	if (self != super.init ) return nil;
-	myPath = [path retain];
-	connected = NO;
-	myAccount = [account retain];
+	myPath 		= [path retain];
+	connected 	= NO;
+	myAccount 	= [account retain];
 	char buffer[MAX_PATH_SIZE];
-	myFolder = mailfolder_new(storage, [self getUTF7String:buffer fromString:myPath], NULL);
+	myFolder 	= mailfolder_new(storage, [self getUTF7String:buffer fromString:myPath], NULL);
 	if (!myFolder) return nil;
 	return self;
 }
@@ -46,7 +47,7 @@ static const int MAX_PATH_SIZE = 1024;
 	[super dealloc];
 }
 
-- (const char *)getUTF7String:(char *)buffer fromString: (NSString*)str
+- (const char *)getUTF7String:(char*)buffer fromString: (NSS*)str
 {
 	return (CFStringGetCString((CFStringRef)str, buffer, MAX_PATH_SIZE, kCFStringEncodingUTF7_IMAP)) ? buffer : NULL;
 }
@@ -63,19 +64,17 @@ static const int MAX_PATH_SIZE = 1024;
 	return YES;
 }
 
-- (void)disconnect {	if (connected)		mailfolder_disconnect(myFolder);	}
+- (void) disconnect {	if (connected)		mailfolder_disconnect(myFolder);	}
 
-- (NSError *)lastError {	return lastError;	}
-
+//- (NSError*)lastError {	return lastError;	}
 //- (BOOL) setPath: (NSString*)path;
 - (void) setPath: (NSString*)path;
 {
 	int err;
-
 	BOOL success = [self connect];
-	if (!success) 	return;// NO;
+	if (!success) 	return;			// NO;
 	success = [self unsubscribe];
-	if (!success) return;// NO;
+	if (!success) return;			// NO;
 	char newPath[MAX_PATH_SIZE];
 	[self getUTF7String:newPath fromString:path];
 	char oldPath[MAX_PATH_SIZE];
@@ -93,14 +92,12 @@ static const int MAX_PATH_SIZE = 1024;
 //	return success;
 }
 
-- (CTIdleResult)idleWithTimeout:(NSUInteger)timeout {
+- (CTIdleResult)idleWithTimeout:(NSUInteger)timeout
+{
 	NSAssert(!self.idling, @"Can't call idle when we are already idling!");
 	self.lastError = nil;
 	
-	BOOL success = [self connect];
-	if (!success) {
-		return CTIdleError;
-	}
+	if (! [self connect] ) return CTIdleError;
 	
 	CTIdleResult result = CTIdleError;
 	int r = 0;
@@ -111,14 +108,14 @@ static const int MAX_PATH_SIZE = 1024;
 		return CTIdleError;
 	}
 	
-	self.imapSession->imap_selection_info->sel_exists = 0;
+	self.imapSession -> imap_selection_info -> sel_exists = 0;
 	r = mailimap_idle(self.imapSession);
 	if (r != MAILIMAP_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(r);
 		result = CTIdleError;
 	}
 	
-	if (r == MAILIMAP_NO_ERROR && self.imapSession->imap_selection_info->sel_exists == 0) {
+	if (r == MAILIMAP_NO_ERROR && self.imapSession -> imap_selection_info -> sel_exists == 0) {
 		int fd;
 		int maxfd;
 		fd_set readfds;
@@ -171,7 +168,8 @@ static const int MAX_PATH_SIZE = 1024;
 	return result;
 }
 
-- (void)cancelIdle {
+- (void)cancelIdle
+{
 	if (self.idling) {
 		int r;
 		char c;
@@ -288,8 +286,8 @@ static const int MAX_PATH_SIZE = 1024;
 	}
 	mailimap *imapSession;
 	imapSession = [self imapSession];
-	if (imapSession->imap_selection_info != NULL) {
-		return imapSession->imap_selection_info->sel_uidvalidity;
+	if (imapSession -> imap_selection_info != NULL) {
+		return imapSession -> imap_selection_info -> sel_uidvalidity;
 	}
 	return 0;
 }
@@ -301,8 +299,8 @@ static const int MAX_PATH_SIZE = 1024;
 	}
 	mailimap *imapSession;
 	imapSession = [self imapSession];
-	if (imapSession->imap_selection_info != NULL) {
-		return imapSession->imap_selection_info->sel_uidnext;
+	if (imapSession -> imap_selection_info != NULL) {
+		return imapSession -> imap_selection_info -> sel_uidnext;
 	}
 	return 0;
 }
@@ -321,7 +319,8 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL) sequenceNumberForUID:(NSUInteger)uid sequenceNumber:(NSUInteger *)sequenceNumber {
+- (BOOL) sequenceNumberForUID:(NSUInteger)uid sequenceNumber:(NSUInteger *)sequenceNumber
+{
 	int r;
 	struct mailimap_fetch_att * fetch_att;
 	struct mailimap_fetch_type * fetch_type;
@@ -329,63 +328,51 @@ static const int MAX_PATH_SIZE = 1024;
 	clist * fetch_result;
 
 	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
+	if (!success) 	return NO;
+
 	set = mailimap_set_new_single(uid);
 	if (set == NULL) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(MAIL_ERROR_MEMORY);
 		return NO;
 	}
-
-	fetch_type = mailimap_fetch_type_new_fetch_att_list_empty();
-	fetch_att = mailimap_fetch_att_new_uid();
-	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	fetch_type 	= mailimap_fetch_type_new_fetch_att_list_empty();
+	fetch_att 	= mailimap_fetch_att_new_uid();
+	r 			= mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
 	if (r != MAILIMAP_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(r);
 		mailimap_fetch_att_free(fetch_att);
 		return NO;
 	}
-
-	r = mailimap_uid_fetch([self imapSession], set, fetch_type, &fetch_result);
+	r 			= mailimap_uid_fetch([self imapSession], set, fetch_type, &fetch_result);
 	if (r != MAILIMAP_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(r);
 		return NO;
 	}
-
 	mailimap_fetch_type_free(fetch_type);
 	mailimap_set_free(set);
 
 	if (!clist_isempty(fetch_result)) {
 		struct mailimap_msg_att *msg_att = (struct mailimap_msg_att *)clist_nth_data(fetch_result, 0);
-		*sequenceNumber = msg_att->att_number;
-	} else {
-		*sequenceNumber = 0;
-	}
+			*sequenceNumber = msg_att -> att_number;
+	} else 	*sequenceNumber = 0;
 	mailimap_fetch_list_free(fetch_result);
 	return YES;
 }
 
 // We always fetch UID, RFC822.Size, and Flags
-- (NSArray *)messagesForSet:(struct mailimap_set *)set fetchAttributes:(CTFetchAttributes)attrs uidFetch:(BOOL)uidFetch {
+- (NSArray *)messagesForSet:(struct mailimap_set *)set fetchAttributes:(CTFetchAttributes)attrs uidFetch:(BOOL)uidFetch
+{
 	BOOL success = [self connect];
-	if (!success) {
-		return nil;
-	}
+	if (!success)	return nil;
 
-	NSMutableArray *messages = [NSMutableArray array];
-
-	int r;
-	struct mailimap_fetch_att * fetch_att;
-	struct mailimap_fetch_type * fetch_type;
+	NSMutableArray *messages = NSMutableArray.new;
 	struct mailmessage_list * env_list;
-
 	clist * fetch_result;
 
-	fetch_type = mailimap_fetch_type_new_fetch_att_list_empty();
+	struct mailimap_fetch_type * fetch_type	= mailimap_fetch_type_new_fetch_att_list_empty();
 	// Always fetch UID
-	fetch_att = mailimap_fetch_att_new_uid();
-	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	struct mailimap_fetch_att * fetch_att	= mailimap_fetch_att_new_uid();
+	int r 									= mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
 	if (r != MAILIMAP_NO_ERROR) {
 		mailimap_fetch_att_free(fetch_att);
 		mailimap_fetch_type_free(fetch_type);
@@ -394,8 +381,8 @@ static const int MAX_PATH_SIZE = 1024;
 	}
 
 	// Always fetch flags
-	fetch_att = mailimap_fetch_att_new_flags();
-	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	fetch_att 	= mailimap_fetch_att_new_flags();
+	r 			= mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
 	if (r != MAILIMAP_NO_ERROR) {
 		mailimap_fetch_att_free(fetch_att);
 		mailimap_fetch_type_free(fetch_type);
@@ -404,8 +391,8 @@ static const int MAX_PATH_SIZE = 1024;
 	}
 
 	// Always fetch RFC822.Size
-	fetch_att = mailimap_fetch_att_new_rfc822_size();
-	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	fetch_att 	= mailimap_fetch_att_new_rfc822_size();
+	r 			= mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
 	if (r != MAILIMAP_NO_ERROR) {
 		mailimap_fetch_att_free(fetch_att);
 		mailimap_fetch_type_free(fetch_type);
@@ -415,8 +402,8 @@ static const int MAX_PATH_SIZE = 1024;
 
 	// We only fetch the body structure if requested
 	if (attrs & CTFetchAttrBodyStructure) {
-		fetch_att = mailimap_fetch_att_new_bodystructure();
-		r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+		fetch_att 	= mailimap_fetch_att_new_bodystructure();
+		r 			= mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
 		if (r != MAILIMAP_NO_ERROR) {
 			mailimap_fetch_att_free(fetch_att);
 			mailimap_fetch_type_free(fetch_type);
@@ -461,17 +448,17 @@ static const int MAX_PATH_SIZE = 1024;
 	}
 
 	// Parsing of MIME bodies
-	int len = carray_count(env_list->msg_tab);
+	int len = carray_count(env_list -> msg_tab);
 
 	clistiter *fetchResultIter = clist_begin(fetch_result);
 	for(int i=0; i<len; i++) {
-		struct mailimf_fields * fields = NULL;
-		struct mailmime * new_body = NULL;
+		struct mailimf_fields * fields 		      = NULL;
+		struct mailmime * new_body 				  = NULL;
 		struct mailmime_content * content_message = NULL;
-		struct mailmime * body = NULL;
+		struct mailmime * body 					  = NULL;
 
-		struct mailmessage * msg = carray_get(env_list->msg_tab, i);
-		struct mailimap_msg_att *msg_att = (struct mailimap_msg_att *)clist_content(fetchResultIter);
+		struct mailmessage * msg 				  = carray_get(env_list -> msg_tab, i);
+		struct mailimap_msg_att *msg_att 		  = (struct mailimap_msg_att *)clist_content(fetchResultIter);
 		if (msg_att == nil) {
 			self.lastError = MailCoreCreateErrorFromIMAPCode(MAIL_ERROR_MEMORY);
 			return nil;
@@ -535,9 +522,9 @@ static const int MAX_PATH_SIZE = 1024;
 			}
 		}
 
-		CTCoreMessage* msgObject = [[CTCoreMessage alloc] initWithMessageStruct:msg];
+		CTCoreMessage* msgObject = [CTCoreMessage.alloc initWithMessageStruct:msg];
 		msgObject.parentFolder = self;
-		[msgObject setSequenceNumber:msg_att->att_number];
+		[msgObject setSequenceNumber:msg_att -> att_number];
 		if (fields != NULL) {
 			[msgObject setFields:fields];
 		}
@@ -552,7 +539,7 @@ static const int MAX_PATH_SIZE = 1024;
 
 	if (env_list != NULL) {
 		//I am only freeing the message array because the messages themselves are in use
-		carray_free(env_list->msg_tab);
+		carray_free(env_list -> msg_tab);
 		free(env_list);
 	}
 	mailimap_fetch_list_free(fetch_result);
@@ -560,19 +547,20 @@ static const int MAX_PATH_SIZE = 1024;
 	return messages;
 }
 
-- (NSArray *)messagesFromSequenceNumber:(NSUInteger)startNum to:(NSUInteger)endNum withFetchAttributes:(CTFetchAttributes)attrs {
+- (NSA*)messagesFromSequenceNumber:(NSUI)startNum to:(NSUI)endNum withFetchAttributes:(CTFetchAttributes)attrs
+{
 	struct mailimap_set *set = mailimap_set_new_interval(startNum, endNum);
-	NSArray *results = [self messagesForSet:set fetchAttributes:attrs uidFetch:NO];
-	return results;
+	return  [self messagesForSet:set fetchAttributes:attrs uidFetch:NO];
 }
 
-- (NSArray *)messagesFromUID:(NSUInteger)startUID to:(NSUInteger)endUID withFetchAttributes:(CTFetchAttributes)attrs {
+- (NSA*)messagesFromUID:(NSUI)startUID to:(NSUI)endUID withFetchAttributes:(CTFetchAttributes)attrs
+{
 	struct mailimap_set *set = mailimap_set_new_interval(startUID, endUID);
-	NSArray *results = [self messagesForSet:set fetchAttributes:attrs uidFetch:YES];
-	return results;
+	return  [self messagesForSet:set fetchAttributes:attrs uidFetch:YES];
 }
 
-- (CTCoreMessage *)messageWithUID:(NSUInteger)uid {
+- (CTCoreMessage *)messageWithUID:(NSUI)uid
+{
 	int err;
 	struct mailmessage *msgStruct;
 	char uidString[100];
@@ -580,27 +568,26 @@ static const int MAX_PATH_SIZE = 1024;
 	sprintf(uidString, "%d-%d", (uint32_t)[self uidValidity], (uint32_t)uid);
 
 	BOOL success = [self connect];
-	if (!success) {
-		return nil;
-	}
+	if (!success) return nil;
+
 	err = mailfolder_get_message_by_uid([self folderStruct], uidString, &msgStruct);
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return nil;
 	}
-	err = mailmessage_fetch_envelope(msgStruct,&(msgStruct->msg_fields));
+	err = mailmessage_fetch_envelope(msgStruct,&(msgStruct -> msg_fields));
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return nil;
 	}
 	//TODO Fix me, i'm missing alot of things that aren't being downloaded,
 	// I just hacked this in here for the mean time
-	err = mailmessage_get_flags(msgStruct, &(msgStruct->msg_flags));
+	err = mailmessage_get_flags(msgStruct, &(msgStruct -> msg_flags));
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return nil;
 	}
-	CTCoreMessage *msg = [[[CTCoreMessage alloc] initWithMessageStruct:msgStruct] autorelease];
+	CTCoreMessage *msg = [[CTCoreMessage.alloc initWithMessageStruct:msgStruct] autorelease];
 	msg.parentFolder = self;
 	return msg;
 }
@@ -613,34 +600,28 @@ static const int MAX_PATH_SIZE = 1024;
 	By not including these methods, CTCoreMessage doesn't depend on CTCoreFolder anymore. CTCoreFolder
 	already depends on CTCoreMessage so we aren't adding any dependencies here. */
 
-- (BOOL) flagsForMessage:(CTCoreMessage *)msg flags:(NSUInteger *)flags {
-	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
+- (BOOL) flagsForMessage:(CTCoreMessage *)msg flags:(NSUI*)flags
+{
+	if (![self connect]) return NO;
 
 	self.lastError = nil;
-	int err;
 	struct mail_flags *flagStruct;
-	err = mailmessage_get_flags([msg messageStruct], &flagStruct);
+	int err = mailmessage_get_flags([msg messageStruct], &flagStruct);
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return NO;
 	}
-	*flags = flagStruct->fl_flags;
+	*flags = flagStruct -> fl_flags;
 	return YES;
 }
 
 
-- (BOOL) setFlags:(NSUInteger)flags forMessage:(CTCoreMessage *)msg {
-	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
+- (BOOL) setFlags:(NSUI)flags forMessage:(CTCoreMessage *)msg
+{
+	if (![self connect]) return NO;
 
-	int err;
-	[msg messageStruct]->msg_flags->fl_flags=flags;
-	err = mailmessage_check([msg messageStruct]);
+	[msg messageStruct] -> msg_flags -> fl_flags=flags;
+	int err = mailmessage_check([msg messageStruct]);
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return NO;
@@ -654,13 +635,10 @@ static const int MAX_PATH_SIZE = 1024;
 }
 
 
-- (BOOL) expunge {
-	int err;
-	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
-	err = mailfolder_expunge(myFolder);
+- (BOOL) expunge
+{
+	if (! [self connect] ) return NO;
+	int err = mailfolder_expunge(myFolder);
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return NO;
@@ -668,11 +646,9 @@ static const int MAX_PATH_SIZE = 1024;
 	return YES;
 }
 
-- (BOOL) copyMessageWithUID:(NSUInteger)uid toPath: (NSString*)path {
-	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
+- (BOOL) copyMessageWithUID:(NSUI)uid toPath: (NSS*)path
+{
+	if (![self connect]) return NO;
 
 	const char *mbPath = [path cStringUsingEncoding:NSUTF8StringEncoding];
 	int err = mailsession_copy_message([self folderSession], uid, mbPath);
@@ -683,11 +659,9 @@ static const int MAX_PATH_SIZE = 1024;
 	return YES;
 }
 
-- (BOOL) moveMessageWithUID:(NSUInteger)uid toPath: (NSString*)path {
-	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
+- (BOOL) moveMessageWithUID:(NSUI)uid toPath: (NSS*)path
+{
+	if (![self connect]) return NO;
 
 	const char *mbPath = [path cStringUsingEncoding:NSUTF8StringEncoding];
 	int err = mailsession_move_message([self folderSession], uid, mbPath);
@@ -698,15 +672,11 @@ static const int MAX_PATH_SIZE = 1024;
 	return YES;
 }
 
-- (BOOL) unreadMessageCount:(NSUInteger *)unseenCount {
+- (BOOL) unreadMessageCount:(NSUI*)unseenCount
+{
+	if (![self connect]) return NO;
 	unsigned int junk;
-	int err;
-
-	BOOL success = [self connect];
-	if (!success) {
-		return NO;
-	}
-	err =  mailfolder_status(myFolder, &junk, &junk, (uint32_t *)unseenCount);
+	int err =  mailfolder_status(myFolder, &junk, &junk, (uint32_t *)unseenCount);
 	if (err != MAIL_NO_ERROR) {
 		self.lastError = MailCoreCreateErrorFromIMAPCode(err);
 		return NO;
@@ -720,13 +690,13 @@ static const int MAX_PATH_SIZE = 1024;
 	if (!success) {
 		return NO;
 	}
-	*totalCount =  [self imapSession]->imap_selection_info->sel_exists;
+	*totalCount =  [self imapSession] -> imap_selection_info -> sel_exists;
 	return YES;
 }
 
 
 - (mailsession *)folderSession; {
-	return myFolder->fld_session;
+	return myFolder -> fld_session;
 }
 
 
@@ -736,26 +706,25 @@ static const int MAX_PATH_SIZE = 1024;
 	mailsession *session;
 
 	session = [self folderSession];
-	if (strcasecmp(session->sess_driver->sess_name, "imap-cached") == 0) {
-		cached_data = session->sess_data;
-		session = cached_data->imap_ancestor;
+	if (strcasecmp(session -> sess_driver -> sess_name, "imap-cached") == 0) {
+		cached_data = session -> sess_data;
+		session = cached_data -> imap_ancestor;
 	}
 
-	data = session->sess_data;
-	return data->imap_session;
+	data = session -> sess_data;
+	return data -> imap_session;
 }
 
 /* From Libetpan source */
 //TODO Can these things be made public in libetpan?
-int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result,
-						mailsession * session, mailmessage_driver * driver) {
-	clistiter * cur;
-	struct mailmessage_list * env_list;
-	int r;
-	int res;
-	carray * tab;
-	unsigned int i;
-	mailmessage * msg;
+int uid_list_to_env_list( clist *fetch_result, 	struct mailmessage_list **result,
+						  mailsession *session, mailmessage_driver *driver) {
+	clistiter 				*cur;
+	struct mailmessage_list *env_list;
+	int 			r, res;
+	carray 			*tab;
+	unsigned int 	i;
+	mailmessage 	*msg;
 
 	tab = carray_new(128);
 	if (tab == NULL) {
@@ -772,19 +741,19 @@ int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result
 		msg_att = clist_content(cur);
 		uid = 0;
 		size = 0;
-		for(item_cur = clist_begin(msg_att->att_list); item_cur != NULL; item_cur = clist_next(item_cur)) {
+		for(item_cur = clist_begin(msg_att -> att_list); item_cur != NULL; item_cur = clist_next(item_cur)) {
 			struct mailimap_msg_att_item * item;
 
 			item = clist_content(item_cur);
-			switch (item->att_type) {
+			switch (item -> att_type) {
 				case MAILIMAP_MSG_ATT_ITEM_STATIC:
-				switch (item->att_data.att_static->att_type) {
+				switch (item -> att_data.att_static -> att_type) {
 					case MAILIMAP_MSG_ATT_UID:
-						uid = item->att_data.att_static->att_data.att_uid;
+						uid = item -> att_data.att_static -> att_data.att_uid;
 					break;
 
 					case MAILIMAP_MSG_ATT_RFC822_SIZE:
-						size = item->att_data.att_static->att_data.att_rfc822_size;
+						size = item -> att_data.att_static -> att_data.att_rfc822_size;
 					break;
 				}
 				break;

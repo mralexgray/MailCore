@@ -31,7 +31,7 @@
 		return nil;
 	}
 
-	id mime = [mToVisit objectAtIndex:0];
+	id mime = mToVisit[0];
 	if ([mime isKindOfClass:[CTMIME_MessagePart class]]) {
 		if ([mime content] != nil) {
 			[mToVisit addObject:[mime content]];

@@ -1,33 +1,5 @@
-/*
- * MailCore
- *
- * Copyright (C) 2010 - Matt Ronge
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *	notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *	notice, this list of conditions and the following disclaimer in the
- *	documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the MailCore project nor the names of its
- *	contributors may be used to endorse or promote products derived
- *	from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
+/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
+
 
 #import <libetpan/libetpan.h>
 
@@ -46,7 +18,7 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 	if (ptrToSelf != nil) {
 		float theProgress = (float) aCurrent / (float) aTotal * 100;
 		[ptrToSelf performSelector:@selector(handleSmtpProgress:)
-						withObject:[NSNumber numberWithFloat:theProgress]];
+						withObject:@(theProgress)];
 	}
 }
 
@@ -86,16 +58,16 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 		mMailThread = nil;
 		mDelegate = aDelegate;
 		mServerSettings =
-			[[NSDictionary dictionaryWithObjectsAndKeys:aServer, @"server",
-														aUsername, @"username",
-														aPassword, @"password",
-														[NSNumber numberWithInt:aPort], @"port",
-														[NSNumber numberWithBool:aTls], @"tls",
-														[NSNumber numberWithBool:aAuth], @"auth", nil] retain];
+			[@{@"server": aServer,
+														@"username": aUsername,
+														@"password": aPassword,
+														@"port": @(aPort),
+														@"tls": @(aTls),
+														@"auth": @(aAuth)} retain];
 
 		//save clients from themselves (they could be leaking us - no dealloc)
-		[[NSNotificationCenter defaultCenter] removeObserver:self];
-		[[NSNotificationCenter defaultCenter] addObserver:self
+		[NSNotificationCenter.defaultCenter removeObserver:self];
+		[NSNotificationCenter.defaultCenter addObserver:self
 												 selector:@selector(threadWillExitHandler:)
 													 name:NSThreadWillExitNotification
 												   object:nil];
@@ -104,13 +76,13 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 }
 
 - (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 	[self cleanupAfterThread];
 	[super dealloc];
 }
 
 - (void)finalize {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[NSNotificationCenter.defaultCenter removeObserver:self];
 	[self cleanupAfterThread];
 	[super finalize];
 }
@@ -144,9 +116,9 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 	//mark thread as cancelled
 	[mMailThread cancel];
 	//cancel libetpan smtp stream
-	mailstream_cancel(mSMTP->stream);
-	mailstream_close(mSMTP->stream);
-	mSMTP->stream = NULL;
+	mailstream_cancel(mSMTP -> stream);
+	mailstream_close(mSMTP -> stream);
+	mSMTP -> stream = NULL;
 	mailsmtp_free(mSMTP);
 	mSMTP = NULL;
 }
@@ -170,8 +142,8 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 
 	NSDictionary *theSettings = self.serverSettings;
 
-	success = [mSMTPObj connectToServer:[theSettings objectForKey:@"server"]
-		port:[[theSettings objectForKey:@"port"] unsignedIntValue]];
+	success = [mSMTPObj connectToServer:theSettings[@"server"]
+		port:[theSettings[@"port"] unsignedIntValue]];
 	if (!success) {
 		goto error;
 	}
@@ -184,16 +156,16 @@ smtpProgress(size_t aCurrent, size_t aTotal) {
 			goto error;
 		}
 	}
-	if ([(NSNumber *) [theSettings objectForKey:@"tls"] boolValue]) {
+	if ([(NSNumber *) theSettings[@"tls"] boolValue]) {
 		success = [mSMTPObj startTLS];
 		if (!success) {
 			goto error;
 		}
 	}
-	if ([(NSNumber *) [theSettings objectForKey:@"auth"] boolValue]) {
-		success = [mSMTPObj authenticateWithUsername:[theSettings objectForKey:@"username"]
-			password:[theSettings objectForKey:@"password"]
-			server:[theSettings objectForKey:@"server"]];
+	if ([(NSNumber *) theSettings[@"auth"] boolValue]) {
+		success = [mSMTPObj authenticateWithUsername:theSettings[@"username"]
+			password:theSettings[@"password"]
+			server:theSettings[@"server"]];
 		if (!success) {
 			goto error;
 		}
@@ -262,10 +234,10 @@ error:
 	mSMTPObj = nil;
 
 	if (mSMTP) {
-		if (mSMTP->stream) {
-			mailstream_cancel(mSMTP->stream);
-			mailstream_close(mSMTP->stream);
-			mSMTP->stream = NULL;
+		if (mSMTP -> stream) {
+			mailstream_cancel(mSMTP -> stream);
+			mailstream_close(mSMTP -> stream);
+			mSMTP -> stream = NULL;
 		}
 		mailsmtp_free(mSMTP);
 		mSMTP = NULL;

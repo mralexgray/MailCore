@@ -7,12 +7,10 @@
 void MailCoreEnableLogging();
 void MailCoreDisableLogging();
 
-NSError* MailCoreCreateError(int errcode, NSString *description);
-
+NSERR* MailCoreCreateError( int errcode, NSS *description );
 /**	   Translates the LibEtPan IMAP error code into NSError with error description	*/
-NSError* MailCoreCreateErrorFromIMAPCode(int errcode);
-
+NSERR* MailCoreCreateErrorFromIMAPCode( int errcode );
 /**	   Translates a LibEtPan SMTP specific error code into an NSError with a description	*/
-NSError* MailCoreCreateErrorFromSMTPCode(int errcode);
+NSERR* MailCoreCreateErrorFromSMTPCode( int errcode );
 
-NSString *MailCoreDecodeMIMEPhrase(char *data);
+NSS* MailCoreDecodeMIMEPhrase(char *data);

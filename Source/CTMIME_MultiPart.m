@@ -16,7 +16,7 @@
 	self = [super initWithMIMEStruct:mime forMessage:message];
 	if (self) {
 		myContentList = [[NSMutableArray alloc] init];
-		clistiter *cur = clist_begin(mime->mm_data.mm_multipart.mm_mp_list);
+		clistiter *cur = clist_begin(mime -> mm_data.mm_multipart.mm_mp_list);
 		for (; cur != NULL; cur=clist_next(cur)) {
 			CTMIME *content = [CTMIMEFactory createMIMEWithMIMEStruct:clist_content(cur) forMessage:message];
 			if (content != nil) {

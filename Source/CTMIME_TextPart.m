@@ -25,7 +25,7 @@
 		char *converted;
 		size_t converted_len;
 
-		char *source_charset = mMimeFields->fld_content_charset;
+		char *source_charset = mMimeFields -> fld_content_charset;
 		if (source_charset == NULL) {
 			source_charset = DEST_CHARSET;
 		}
@@ -65,7 +65,7 @@
 	mime_fields = mailmime_fields_new_encoding(MAILMIME_MECHANISM_QUOTED_PRINTABLE);
 	content = mailmime_content_new_with_str("text/plain");
 	param = mailmime_parameter_new(strdup("charset"), strdup(DEST_CHARSET));
-	r = clist_append(content->ct_parameters, param);
+	r = clist_append(content -> ct_parameters, param);
 	mime_sub = mailmime_new_empty(content, mime_fields);
 	NSString *str = [self content];
 	NSData * data = [str dataUsingEncoding:NSUTF8StringEncoding];

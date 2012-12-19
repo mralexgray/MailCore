@@ -7,8 +7,7 @@
 @implementation CTCoreAddress
 @synthesize email, name;
 
-+ (id)address {	return [CTCoreAddress.alloc init];	}
-
++ (id)address {	return CTCoreAddress.new;	}
 
 + (id)addressWithName: (NSString*)aName email: (NSString*)aEmail {
 	return  [CTCoreAddress.alloc initWithName:aName email:aEmail];
@@ -17,8 +16,8 @@
 - (id)initWithName: (NSString*)aName email: (NSString*)aEmail
 {
 	if (self != super.init ) return nil;
-	name = aName;
-	email = aEmail;
+	name 	= aName;
+	email 	= aEmail;
 	return self;
 }
 
@@ -30,6 +29,7 @@
 	return self;
 }
 
+-(NSString*)domain {return [self.email substringAfter:@"@"]; }
 -(NSString*)decodedName {
 	return MailCoreDecodeMIMEPhrase((char *)[self.name UTF8String]);
 }
@@ -42,12 +42,7 @@
 - (BOOL) isEqual:(id)object
 {
 	if (![object isKindOfClass:[CTCoreAddress class]])	return NO;
-	return [[object name] isEqualToString:self.name] && [[object email] isEqualToString:self.email];
+	return [[(CTCoreAddress*)object name] isEqualToString:self.name] && [[object email] isEqualToString:self.email];
 }
 
-- (void)dealloc {
-	[email release];
-	[name release];
-	[super dealloc];
-}
 @end

@@ -1,8 +1,9 @@
-/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
+/** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission.   */
 
 #import <Foundation/Foundation.h>
 #import <libetpan/libetpan.h>
 #import "MailCoreTypes.h"
+#import <AtoZCore/AtoZUmbrella.h>
 
 /**	CTCoreFolder is the class used to get and set attributes for a server side folder. It is also the
  	class used to get a list of messages from the server. You need to make sure and establish a connection
@@ -12,10 +13,6 @@
 @interface CTCoreFolder : NSObject
 {
 	struct mailfolder 	*myFolder;
-	CTCoreAccount 		*myAccount;
-	NSString 			*myPath;
-	BOOL 				connected, idling;
-	NSError 			*lastError;
 	int 				idlePipe[2];
 }
 /**	If an error occurred (nil or return of NO) call this method to get the error	*/
@@ -34,7 +31,7 @@
 /**	This will return the message from this folder with the UID that was passed in.
 	A CTMessage object is returned which can be used to get further information and perform operationson the message.
  	@return A CTCoreMessage or if not found, nil	*/
-- (CTCoreMessage *)messageWithUID:(NSUInteger)uid;
+- (CTCoreMessage *)messageWithUID:(NSUI)uid;
 
 /**	Use this method to download message lists from the server.
 	This method take fetch attributes which configure what is fetched. Fetch attributes can be combined
@@ -50,7 +47,7 @@
 	@param end The ending message sequence number, or if you'd like to fetch to the end of the message list pass in 0
  	@param attrs This controls what is fetched.
  	@return Returns a NSArray of CTCoreMessage's. Returns nil on error	*/
-- (NSArray *)messagesFromSequenceNumber:(NSUInteger)startNum to:(NSUInteger)endNum withFetchAttributes:(CTFetchAttributes)attrs;
+- (NSA*)messagesFromSequenceNumber:(NSUI)startNum to:(NSUI)endNum withFetchAttributes:(CTFetchAttributes)attrs;
 
 /**	Use this method to download message lists from the server. 
 	This method uses UID ranges to determine which messages to download, while messagesFromSequenceNumber:to:withFetchAttributes: uses sequence numbers.
@@ -59,13 +56,13 @@
 	@param attrs This controls what is fetched.
 	@return Returns a NSArray of CTCoreMessage's. Returns nil on error
 	@see messagesFromSequenceNumber:to:withFetchAttributes:	*/
-- (NSArray *)messagesFromUID:(NSUInteger)startUID to:(NSUInteger)endUID withFetchAttributes:(CTFetchAttributes)attrs;
+- (NSA*)messagesFromUID:(NSUI)startUID to:(NSUI)endUID withFetchAttributes:(CTFetchAttributes)attrs;
 
 /**	Pulls the sequence number for the message with the specified uid.
  	It does not perform UID validation, and the sequence ID is only valid per session.
 	@param The uid for the message
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) sequenceNumberForUID:(NSUInteger)uid sequenceNumber:(NSUInteger *)sequenceNumber;
+- (BOOL) sequenceNumberForUID:(NSUI)uid sequenceNumber:(NSUI*)sequenceNumber;
 
 /**	Perform an IMAP check command
 	From IMAP RFC: "The CHECK command requests a checkpoint of the currently selected mailbox.
@@ -88,7 +85,7 @@
 - (CTIdleResult) idleWithTimeout:(NSUInteger)timeout;
 - (void) cancelIdle;
 
-@property (atomic) BOOL idling;
+@property (nonatomic) BOOL idling, connected;
 
 /**	If the folder doesn't exist on the server this method will create it. Make sure the pathname
  has been set first.
@@ -111,10 +108,10 @@
  	Here is a list of message flags:	CTFlagNew, 		CTFlagSeen, 	CTFlagFlagged, 
 										CTFlagDeleted,	CTFlagAnswered, CTFlagForwarded.
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) flagsForMessage:(CTCoreMessage *)msg flags:(NSUInteger *)flags;
+- (BOOL) flagsForMessage:(CTCoreMessage *)msg flags:(NSUI*)flags;
 /**	Sets the message's flags on the server, take a look at the documentation for flagsForMessage:
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) setFlags:(NSUInteger)flags forMessage:(CTCoreMessage *)msg;
+- (BOOL) setFlags:(NSUI)flags forMessage:(CTCoreMessage *)msg;
 /**	Deletes all messages contained in the folder that are marked for deletion. 
 	Deleting messages in IMAP is a little strange, first  you need to set the message flag 
 	CTFlagDeleted to CTFlagSet, and	then when you call expunge on the folder the message is contained
@@ -123,27 +120,32 @@
 - (BOOL) expunge;
 /**	Copies a message to a folder
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) copyMessageWithUID:(NSUInteger)uid toPath: (NSString*)path;
+- (BOOL) copyMessageWithUID:(NSUI)uid toPath: (NSS*)path;
 /**	Moves a message to a folder
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) moveMessageWithUID:(NSUInteger)uid toPath: (NSString*)path;
+- (BOOL) moveMessageWithUID:(NSUI)uid toPath: (NSS*)path;
 /**	Returns the number of unread messages. This causes a round trip to the server, as it fetches
  	the count for each call.
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) unreadMessageCount:(NSUInteger *)unseenCount;
+- (BOOL) unreadMessageCount:(NSUI*)unseenCount;
 /**	Returns the number of messages in the folder. The count was retrieved when the folder connection was
  	established, so to refresh the count you must disconnect and reconnect.
 	@return Return YES on success, NO on error. Call method lastError to get error if one occurred	*/
-- (BOOL) totalMessageCount:(NSUInteger *)totalCount;
+- (BOOL) totalMessageCount:(NSUI*)totalCount;
 /**	Returns the uid validity value for the folder, which can be used to determine if the
  	local cached UID's are still valid, or if the server has changed UID's	*/
-- (NSUInteger)uidValidity;
+- (NSUI)uidValidity;
 /**	Returns the uid next value for the folder. The next message added to the mailbox
  	will be assigned a UID greater than or equal to uidNext	*/
-- (NSUInteger)uidNext;
+- (NSUI)uidNext;
 
 /* Intended for advanced use only */
 - (struct mailfolder*)	folderStruct;
 - (mailsession*)		folderSession;
 - (mailimap*)			imapSession;
 @end
+
+
+//	CTCoreAccount 		*myAccount;
+//	NSString 			*myPath;
+//	BOOL 				connected, idling;

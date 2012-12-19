@@ -14,16 +14,16 @@
 		// We couldn't find a content-type, set it to something generic
 		NSString *mainType = @"application";
 		NSString *subType = @"octet-stream";
-		if (mime != NULL && mime->mm_content_type != NULL) {
-			struct mailmime_content *content = mime->mm_content_type;
-			if (content->ct_type != NULL) {
-				subType = [NSString stringWithCString:content->ct_subtype
+		if (mime != NULL && mime -> mm_content_type != NULL) {
+			struct mailmime_content *content = mime -> mm_content_type;
+			if (content -> ct_type != NULL) {
+				subType = [NSString stringWithCString:content -> ct_subtype
 							encoding:NSUTF8StringEncoding];
 				subType = [subType lowercaseString];
-				struct mailmime_type *type = content->ct_type;
-				if (type->tp_type == MAILMIME_TYPE_DISCRETE_TYPE &&
-					type->tp_data.tp_discrete_type != NULL) {
-					switch (type->tp_data.tp_discrete_type->dt_type) {
+				struct mailmime_type *type = content -> ct_type;
+				if (type -> tp_type == MAILMIME_TYPE_DISCRETE_TYPE &&
+					type -> tp_data.tp_discrete_type != NULL) {
+					switch (type -> tp_data.tp_discrete_type -> dt_type) {
 						case MAILMIME_DISCRETE_TYPE_TEXT:
 							mainType = @"text";
 						break;
@@ -41,9 +41,9 @@
 						break;
 					}
 				}
-				else if (type->tp_type == MAILMIME_TYPE_COMPOSITE_TYPE &&
-							type->tp_data.tp_composite_type != NULL) {
-					switch (type->tp_data.tp_discrete_type->dt_type) {
+				else if (type -> tp_type == MAILMIME_TYPE_COMPOSITE_TYPE &&
+							type -> tp_data.tp_composite_type != NULL) {
+					switch (type -> tp_data.tp_discrete_type -> dt_type) {
 						case MAILMIME_COMPOSITE_TYPE_MESSAGE:
 							mainType = @"message";
 						break;
@@ -80,10 +80,10 @@
 	struct mailmime *mime = [self buildMIMEStruct];
 	mailmime_write_mem(str, &col, mime);
 	err = mmap_string_ref(str);
-	resultStr = [[NSString alloc] initWithBytes:str->str length:str->len
+	resultStr = [[NSString alloc] initWithBytes:str -> str length:str -> len
 					encoding:NSUTF8StringEncoding];
 	mmap_string_free(str);
-	mime->mm_data.mm_message.mm_fields = NULL;
+	mime -> mm_data.mm_message.mm_fields = NULL;
 	mailmime_free(mime);
 	return [resultStr autorelease];
 }

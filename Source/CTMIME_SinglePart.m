@@ -10,12 +10,12 @@
 static inline struct imap_session_state_data *
 get_session_data(mailmessage * msg)
 {
-	return msg->msg_session->sess_data;
+	return msg -> msg_session -> sess_data;
 }
 
 static inline mailimap * get_imap_session(mailmessage * msg)
 {
-	return get_session_data(msg)->imap_session;
+	return get_session_data(msg) -> imap_session;
 }
 
 static void download_progress_callback(size_t current, size_t maximum, void * context) {
@@ -56,16 +56,16 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
 		mMessage = message;
 		self.fetched = NO;
 
-		mMimeFields = mailmime_single_fields_new(mMime->mm_mime_fields, mMime->mm_content_type);
+		mMimeFields = mailmime_single_fields_new(mMime -> mm_mime_fields, mMime -> mm_content_type);
 		if (mMimeFields != NULL) {
-			if (mMimeFields->fld_id != NULL) {
-				self.contentId = [NSString stringWithCString:mMimeFields->fld_id encoding:NSUTF8StringEncoding];
+			if (mMimeFields -> fld_id != NULL) {
+				self.contentId = [NSString stringWithCString:mMimeFields -> fld_id encoding:NSUTF8StringEncoding];
 			}
 			
-			struct mailmime_disposition *disp = mMimeFields->fld_disposition;
+			struct mailmime_disposition *disp = mMimeFields -> fld_disposition;
 			if (disp != NULL) {
-				if (disp->dsp_type != NULL) {
-					self.attached = (disp->dsp_type->dsp_type ==
+				if (disp -> dsp_type != NULL) {
+					self.attached = (disp -> dsp_type -> dsp_type ==
 										MAILMIME_DISPOSITION_TYPE_ATTACHMENT);
 
 					if (self.attached)
@@ -76,14 +76,14 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
 						// - usually they look like -
 						// Content-Type: image/jpeg; name="photo.JPG"
 						// Content-Disposition: attachment; filename="photo.JPG"
-						if (mMimeFields->fld_disposition_filename == NULL && mMimeFields->fld_content_name != NULL)
-							mMimeFields->fld_disposition_filename = mMimeFields->fld_content_name;
+						if (mMimeFields -> fld_disposition_filename == NULL && mMimeFields -> fld_content_name != NULL)
+							mMimeFields -> fld_disposition_filename = mMimeFields -> fld_content_name;
 					}
 				}
 			}
 
-			if (mMimeFields->fld_disposition_filename != NULL) {
-				self.filename = [NSString stringWithCString:mMimeFields->fld_disposition_filename encoding:NSUTF8StringEncoding];
+			if (mMimeFields -> fld_disposition_filename != NULL) {
+				self.filename = [NSString stringWithCString:mMimeFields -> fld_disposition_filename encoding:NSUTF8StringEncoding];
 
 				NSString* lowercaseName = [self.filename lowercaseString];
 				if([lowercaseName hasSuffix:@".xls"] ||
@@ -120,19 +120,19 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
 		struct mailmime_single_fields *mimeFields = NULL;
 
 		int encoding = MAILMIME_MECHANISM_8BIT;
-		mimeFields = mailmime_single_fields_new(mMime->mm_mime_fields, mMime->mm_content_type);
-		if (mimeFields != NULL && mimeFields->fld_encoding != NULL)
-			encoding = mimeFields->fld_encoding->enc_type;
+		mimeFields = mailmime_single_fields_new(mMime -> mm_mime_fields, mMime -> mm_content_type);
+		if (mimeFields != NULL && mimeFields -> fld_encoding != NULL)
+			encoding = mimeFields -> fld_encoding -> enc_type;
 
 		char *fetchedData = NULL;
 		size_t fetchedDataLen;
 		int r;
 
-		if (mMessage->msg_session != NULL) {
+		if (mMessage -> msg_session != NULL) {
 			mailimap_set_progress_callback(get_imap_session(mMessage), &download_progress_callback, NULL, block);  
 		}
 		r = mailmessage_fetch_section(mMessage, mMime, &fetchedData, &fetchedDataLen);
-		if (mMessage->msg_session != NULL) {
+		if (mMessage -> msg_session != NULL) {
 			mailimap_set_progress_callback(get_imap_session(mMessage), NULL, NULL, NULL); 
 		}
 		if (r != MAIL_NO_ERROR) {
@@ -194,7 +194,7 @@ static void download_progress_callback(size_t current, size_t maximum, void * co
 
 - (size_t)size {
 	if (mMime) {
-		return mMime->mm_length;
+		return mMime -> mm_length;
 	}
 	return 0;
 }
