@@ -1,10 +1,7 @@
 /* MyController */
 
-#import <Cocoa/Cocoa.h>
-#import <MailCore/MailCore.h>
 
 @interface MyController : NSObject
-
 
 @property IBOutlet id password;
 @property IBOutlet id port;

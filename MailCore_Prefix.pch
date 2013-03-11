@@ -6,5 +6,6 @@
     #import <Foundation/Foundation.h>
 	#import <libetpan/libetpan.h>
 	#import <Cocoa/Cocoa.h>
-	#import <AtoZCore/AtoZCore.h>
+//	#import <AtoZCore/AtoZCore.h>
+	#import <AtoZ/AtoZ.h>
 #endif

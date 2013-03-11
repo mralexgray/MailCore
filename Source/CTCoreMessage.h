@@ -1,6 +1,7 @@
 /** MailCore * Copyright (C) 2007 - Matt Ronge * All rights reserved. * Redistribution and use in source and binary forms, with or without * modification, are permitted provided that the following conditions * are met:  .edistributions of source code must retain the above copyright	notice, this list of conditions and the following disclaimer.	2. Redistributions in binary form must reproduce the above copyright		notice, this list of conditions and the following disclaimer in	documentation and/or other materials provided with the distribution.	3. Neither the name of the MailCore project nor the names of its	contributors may be used to endorse or promote products derived	from this software without specific prior written permission. */
 
 #import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #import <libetpan/libetpan.h>
 
 /**	CTCoreMessage is how you work with messages. The easiest way to instantiate a CTCoreMessage
@@ -46,11 +47,9 @@
 /**	This method returns the parsed plain text message body as an NSString.
  	If a plaintext body isn't found an empty string is returned
 	@set This method sets the message body. Plaintext only please!	*/
-@property (nonatomic, strong) NSString	*body;
-
 /**	This method returns the html body as an NSString.
 	Use this method to set the body if you have HTML content.	*/
-@property (nonatomic, strong) NSString 	*htmlBody;
+@property (nonatomic, strong) NSString 	*body, *htmlBody;
 
 /** Returns a message body as an NSString.
 	@param isHTML Pass in a BOOL pointer that will be set to YES if an HTML body is loaded
@@ -96,7 +95,7 @@ This will NOT set any thing on the server.
  This is used to assign sequence numbers after retrieving the message list.	*/
 - (void)setSequenceNumber:(NSUInteger)sequenceNumber;
 
-@property (weak, readonly) NSImage *favicon;
+@property (strong, nonatomic) NSImage *favicon;
 @property (weak, readonly) NSString *fromDomain;
 @property (weak, readonly) NSString *fromString;
 @property (nonatomic, strong) NSSet *from;

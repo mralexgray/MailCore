@@ -2,10 +2,11 @@
 
 @implementation MyController
 @synthesize password, port, username, useTLS, server;
+
 - (id)init
 {
 	if (self != super.init ) return nil;
-	_fetchQuantity = 25;
+	_fetchQuantity = 100;
 	_rangeIncrement = 1;
 	_account 	= CTCoreAccount.new;
 	_messages	= NSMA.new;
@@ -14,9 +15,9 @@
 	return self;
 }
 
-+ (NSSet*) keyPathsForValuesAffectingMailboxCt { return NSSET(@"folder"); }
++ (NSSet*) keyPathsForValuesAffectingMailboxCt 		{ return NSSET(@"folder"); }
 
-+ (NSSet*) keyPathsForValuesAffectingMessageRange { return NSSET(@"mailboxCt"); }
++ (NSSet*) keyPathsForValuesAffectingMessageRange 	{ return NSSET(@"mailboxCt"); }
 
 - (NSUI) mailboxCt
 {
@@ -24,7 +25,6 @@
 	BOOL itWorked = [_folder totalMessageCount:&theCount];
 	return itWorked ? theCount : 0;
 }
-
 
 - (NSI) messageRange
 {
@@ -42,31 +42,30 @@
 	int portNumber 	= [port intValue];
 	BOOL ssl 		= [(NSBUTT*)useTLS state] == NSOnState;
 	
-	[_account connectToServer:[server stringValue]
-						   port:portNumber > 0 ? portNumber : 993
-				 connectionType:ssl ? CONNECTION_TYPE_TLS : CONNECTION_TYPE_PLAIN
-					   authType:IMAP_AUTH_TYPE_PLAIN
-						  login:[username stringValue]
-					   password:[password stringValue]];
+	[_account   connectToServer: [server stringValue]
+						   port: portNumber > 0 ? portNumber : 993
+				 connectionType: ssl ? CONNECTION_TYPE_TLS : CONNECTION_TYPE_PLAIN
+					   authType: IMAP_AUTH_TYPE_PLAIN
+						  login: [username stringValue]
+					   password: [password stringValue]];
 	
-	if(![_account isConnected]) {
-		NSRunCriticalAlertPanel(@"Connection Error", @"Please check your connection details and try again.", @"OK", nil, nil);
-		return;
-	}
-	self.allFolders = _account.allFolders.allObjects.mutableCopy;
+	if(![_account isConnected]) {	NSRunCriticalAlertPanel(@"Connection Error", @"Please check your connection details and try again.", @"OK", nil, nil);	return;		}
 
+	self.allFolders = _account.allFolders.allObjects.mutableCopy;
 }
 
 - (IBAction)loadFolder:(id)sender
 {
 	if ([[sender titleOfSelectedItem] isEqualToString:self.selectedFolderName]) return;
-	self.folder = nil;
+	self.messages		= NSMA.array;
+	self.folder 		= nil;
 	self.rangeIncrement = 1;
-	NSLog(@"Folders %@", [_account allFolders]);
+	NSLog( @"Folders %@", _account.allFolders );
 	_selectedFolderName = [sender titleOfSelectedItem];
 	self.folder = [_account folderWithPath:_selectedFolderName]; //@"GV"];
 //		[self bind:@"inboxCt" toObject:_inbox withKeyPath:@"totalMessageCount" options:nil];
-	NSLog(@"INBOX is %@", _folder);
+	NSLog(@"Active Folder is %@", _folder);
+	[self loadMore:nil];
 	// set the toIndex to 0 so all messages are loaded
 
 }
@@ -98,7 +97,6 @@
 ////		[messa/gesProxy addObject:msg];
 //	}];
 }
-
 
 - (NSUI)countOfMessages											{	return self.messages.count; 				}
 

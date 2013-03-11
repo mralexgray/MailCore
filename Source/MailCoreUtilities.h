@@ -2,6 +2,9 @@
 
 #import <Foundation/Foundation.h>
 #import <libetpan/libetpan.h>
+#import <AtoZ/AtoZ.h>
+
+#define NSERR NSError
 
 /**		Enables logging of all streams, data is output to standard out.	*/
 void MailCoreEnableLogging();

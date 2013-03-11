@@ -4,5 +4,7 @@
 
 #ifdef __OBJC__
 	#import <Cocoa/Cocoa.h>
-	#import <AtoZCore/AtoZCore.h>
+	#import <MailCore/MailCore.h>
+	#import <AtoZ/AtoZ.h>
+//	#import <AtoZCore/AtoZCore.h>
 #endif

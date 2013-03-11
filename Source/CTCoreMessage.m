@@ -21,7 +21,7 @@
 @end
 
 @implementation CTCoreMessage
-@synthesize mime = myParsedMIME, lastError, parentFolder, theMessage = myMessage;
+@synthesize mime = myParsedMIME, lastError, parentFolder, theMessage = myMessage, body;
 
 - (id)init
 {
@@ -69,15 +69,16 @@
 		return NO;
 	}
 	
-	CTMIME *oldMIME = myParsedMIME;
-	myParsedMIME = [CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
+//	CTMIME *oldMIME = myParsedMIME;
+//	myParsedMIME =
+	self.mime = [CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
 						forMessage:[self messageStruct]];
 	return YES;
 }
 
 - (void)setBodyStructure:(struct mailmime *)mime
 {
-	CTMIME *oldMIME = myParsedMIME;
+//	CTMIME *oldMIME = myParsedMIME;
 	myMessage -> msg_mime = mime;
 	myParsedMIME = [CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct] -> msg_mime
 												 forMessage:[self messageStruct]];
@@ -89,13 +90,6 @@
 	myFields = mailimf_single_fields_new(fields);
 }
 
-- (NSString*)body
-{
-	if (myFields == NULL || myParsedMIME == nil) [self fetchBodyStructure];
-	NSMutableString *result = [NSMutableString string];
-	[self _buildUpBodyText:myParsedMIME result:result];
-	return result;
-}
 
 - (BOOL) hasHtmlBody:(CTMIME *)mime
 {
@@ -114,20 +108,32 @@
 
 - (NSString*)htmlBody
 {
-	NSMutableString *result = NSMutableString.new;
-	if ( [self hasHtmlBody])
-	[self _buildUpHtmlBodyText:myParsedMIME result:result];
-	else
-	[self _buildUpBodyText:myParsedMIME result:result];
-	NSLog(@"html: %@", result);
-	return result;
+	return _htmlBody = _htmlBody ? _htmlBody : ^{
+
+		NSMutableString *result = NSMutableString.new;
+		if ( [self hasHtmlBody])
+		[self _buildUpHtmlBodyText:myParsedMIME result:result];
+		else
+		[self _buildUpBodyText:myParsedMIME result:result];
+		NSLog(@"html: %@", result);
+		return result;
+	}();
+}
+
+- (NSS*) body
+{
+	return body = body ? body : ^{
+		if (myFields == NULL || myParsedMIME == nil) [self fetchBodyStructure];
+		NSMutableString *result = [NSMutableString string];
+		[self _buildUpBodyText:myParsedMIME result:result];
+		return result;
+	}();
 }
 
 - (NSString*)bodyPreferringPlainText:(BOOL *)isHTML
 {
-	NSString *body = [self body];
 	*isHTML = NO;
-	if ([body length] == 0) {
+	if ([self.body length] == 0) {
 		body = [self htmlBody];
 		*isHTML = YES;
 	}
@@ -137,78 +143,65 @@
 
 - (void)_buildUpBodyText:(CTMIME *)mime result:(NSMutableString *)result
 {
-	if (mime == nil)
-		return;
+	if (mime == nil)	return;
 
-	if ([mime isKindOfClass:[CTMIME_MessagePart class]]) {
-		[self _buildUpBodyText:[mime content] result:result];
-	}
-	else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
+	[mime isKindOfClass:CTMIME_MessagePart.class] ?
+		[self _buildUpBodyText:mime.content result:result] :
+	[mime isKindOfClass:CTMIME_TextPart.class] ? ^{
 		if ([[mime.contentType lowercaseString] rangeOfString:@"text/plain"].location != NSNotFound) {
 			[(CTMIME_TextPart *)mime fetchPart];
-			NSString* y = [mime content];
-			if(y != nil)			  [result appendString:y];
-		
+			NSString* y = mime.content;
+			if(y != nil)	[result appendString:y];
 		}
-	}
-	else if ([mime isKindOfClass:[CTMIME_MultiPart class]]) {
+	}() :
+	[mime isKindOfClass:[CTMIME_MultiPart class]] ? ^{
 		//TODO need to take into account the different kinds of multipart
 		NSEnumerator *enumer = [[mime content] objectEnumerator];
 		CTMIME *subpart;
 		while ((subpart = [enumer nextObject])) {
 			[self _buildUpBodyText:subpart result:result];
 		}
-	}
+	}(): nil;
 }
 
 - (void)_buildUpHtmlBodyText:(CTMIME *)mime result:(NSMutableString *)result
 {
-	if (mime == nil)
-		return;
-
-	if ([mime isKindOfClass:[CTMIME_MessagePart class]]) {
-		[self _buildUpHtmlBodyText:[mime content] result:result];
-	}
-	else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
+	if (mime == nil) return;
+	[mime isKindOfClass:[CTMIME_MessagePart class]] ?
+		[self _buildUpHtmlBodyText:[mime content] result:result] :
+	[mime isKindOfClass:[CTMIME_TextPart class]] ? ^{
 		if ([[mime.contentType lowercaseString] rangeOfString:@"text/html"].location != NSNotFound) {
 			[(CTMIME_TextPart *)mime fetchPart];
-			NSString* y = [mime content];
-			if(y != nil) {
-				[result appendString:y];
-			}
+			NSS* y = mime.content;
+			if(y != nil) [result appendString:y];
 		}
-	}
-	else if ([mime isKindOfClass:[CTMIME_MultiPart class]]) {
+	}() :
+	[mime isKindOfClass:[CTMIME_MultiPart class]] ? ^{
 		//TODO need to take into account the different kinds of multipart
 		NSEnumerator *enumer = [[mime content] objectEnumerator];
 		CTMIME *subpart;
 		while ((subpart = [enumer nextObject])) {
 			[self _buildUpHtmlBodyText:subpart result:result];
 		}
-	}
+	}() : nil;
 }
 
-
-- (void)setBody: (NSString*)body
+- (void)setBody: (NSString*)aBody
 {
-	CTMIME *oldMIME = myParsedMIME;
-	CTMIME_TextPart *text = [CTMIME_TextPart mimeTextPartWithString:body];
-
+	//	CTMIME *oldMIME = myParsedMIME;
+	CTMIME_TextPart *text = [CTMIME_TextPart mimeTextPartWithString:aBody];
 	// If myParsedMIME is already a multi-part mime, just add it. otherwise replace it.
 	//TODO: If setBody is called multiple times it will add text parts multiple times. Instead
 	// it should find the existing text part (if there is one) and replace it
-	if ([myParsedMIME isKindOfClass:[CTMIME_MultiPart class]]) {
-		[(CTMIME_MultiPart *)myParsedMIME addMIMEPart:text];
-	} else {
-		CTMIME_MessagePart *messagePart = [CTMIME_MessagePart mimeMessagePartWithContent:text];
-		myParsedMIME = messagePart;
-	}
+	if ([myParsedMIME isKindOfClass:[CTMIME_MultiPart class]])
+			[(CTMIME_MultiPart *)myParsedMIME addMIMEPart:text];
+	else	myParsedMIME = (CTMIME_MessagePart *)[CTMIME_MessagePart mimeMessagePartWithContent:text];
 }
 
-- (void)setHTMLBody: (NSString*)body
+- (void)setHTMLBody: (NSString*)aHTMLBody
 {
-	CTMIME *oldMIME 				= myParsedMIME;
-	CTMIME_HtmlPart *text 			= [CTMIME_HtmlPart mimeTextPartWithString:body];
+//	CTMIME *oldMIME 				= myParsedMIME;
+	CTMIME_HtmlPart *text 			= [CTMIME_HtmlPart mimeTextPartWithString:aHTMLBody];
 	CTMIME_MessagePart *messagePart = [CTMIME_MessagePart mimeMessagePartWithContent:text];
 	myParsedMIME 					= messagePart;
 }
@@ -222,7 +215,7 @@
 		if ([mime isKindOfClass:[CTMIME_SinglePart class]]) {
 			CTMIME_SinglePart *singlePart = (CTMIME_SinglePart *)mime;
 			if (singlePart.attached) {
-				CTBareAttachment *attach = [[CTBareAttachment alloc]
+				CTBareAttachment *attach = [CTBareAttachment.alloc
 												initWithMIMESinglePart:singlePart];
 				[attachments addObject:attach];
 			}
@@ -383,12 +376,13 @@
 //+ (NSSet*)keyPathsForValuesAffectingFavicon { return [NSSet setWithArray:@[@"fromDomain"]]; }
 
 - (NSImage*) favicon {
-	return [AZFavIconManager iconForURL:[NSURL URLWithString:self.fromDomain] downloadHandler:^(NSImage *icon) {
+	return _favicon ?: [AZFavIconManager.sharedInstance iconForURL:[NSURL URLWithString:self.fromDomain] downloadHandler:^(NSImage *icon) {
 //		[[NSThread mainThread] performBlock:^{
 //				self.favicon = icon;
 //			}];
-		[self willChangeValueForKey:@"favicon"];
-		[self didChangeValueForKey:@"favicon"];
+//		[self willChangeValueForKey:@"favicon"];
+		self.favicon = icon;
+//		[self didChangeValueForKey:@"favicon"];
 	}];
 //	}();
 }
@@ -400,6 +394,9 @@
 + (NSSet*) keyPathsForValuesAffectingFromString { return [NSSet setWithArray:@[@"from"]]; }
 
 - (NSString*)fromString {
+	return ((CTCoreAddress*)self.from.anyObject).decodedName;
+}
+/*
 	__weak NSMutableString *names = NSMutableString.new;
 	__block NSUInteger numberOfNames = self.from.count;
 	[self.from enumerateObjectsUsingBlock:^(CTCoreAddress* obj, BOOL *stop) {
@@ -411,7 +408,7 @@
 	}];
 	return names;
 }
-
+*/
 - (NSSet *)from
 {
 	if (myFields -> fld_from == NULL)	return nil;
