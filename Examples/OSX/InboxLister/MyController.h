@@ -3,12 +3,14 @@
 
 @interface MyController : NSObject
 
-@property IBOutlet id password;
-@property IBOutlet id port;
-@property IBOutlet id server;
-@property IBOutlet id username;
-@property IBOutlet id useTLS;
-@property IBOutlet NSPopUpButton *foldersButton;
+@property (ASS) IBOutlet AZPropellerView *prop;
+
+@property (ASS) IBOutlet NSTXTF *password;
+@property (ASS) IBOutlet NSBUTT *port;
+@property (ASS) IBOutlet NSTXTF *server;
+@property (ASS) IBOutlet NSTXTF *username;
+@property (ASS) IBOutlet NSBUTT *useTLS;
+@property (ASS) IBOutlet NSPopUpButton *foldersButton;
 
 @property (NATOM, STRNG) NSMA 			*allFolders;
 @property (RONLY) 		 NSUI 			mailboxCt;
@@ -21,6 +23,7 @@
 @property (RONLY) 	 	 NSI 			messageRange;
 @property (NATOM) 	 	 NSI			rangeIncrement;
 @property (NATOM) 		 NSUI 			fetchQuantity;
+
 
 - (IBAction)connect:(id)sender;
 - (IBAction)loadFolder:(id)sender;

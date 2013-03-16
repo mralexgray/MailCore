@@ -14,7 +14,7 @@
 		2D538B45119803A6000AB4A2 /* CTSMTPAsyncConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D538B42119803A6000AB4A2 /* CTSMTPAsyncConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D538B46119803A6000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		2D538B48119803E2000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; };
-		7B7EDA2A16E103E20043311F /* AtoZ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B7EDA2916E103E20043311F /* AtoZ.framework */; };
+		7B66638216F3D67700E7D327 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B66638116F3D67600E7D327 /* QuartzCore.framework */; };
 		7BDFE2B1167A38FA00BC5C53 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BDFE2B0167A38FA00BC5C53 /* AddressBook.framework */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 		F81A8ADC0C03FC3B002F780A /* CTMIME_MessagePart.h in Headers */ = {isa = PBXBuildFile; fileRef = F81A8AD20C03FC3B002F780A /* CTMIME_MessagePart.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -224,8 +224,9 @@
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		2D538B42119803A6000AB4A2 /* CTSMTPAsyncConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CTSMTPAsyncConnection.h; path = Source/CTSMTPAsyncConnection.h; sourceTree = SOURCE_ROOT; };
 		2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CTSMTPAsyncConnection.m; path = Source/CTSMTPAsyncConnection.m; sourceTree = SOURCE_ROOT; };
-		7B7EDA2916E103E20043311F /* AtoZ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AtoZ.framework; path = ../../../../../Library/Frameworks/AtoZ.framework; sourceTree = "<group>"; };
-		7BDFE2B0167A38FA00BC5C53 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = ../../../../../System/Library/Frameworks/AddressBook.framework; sourceTree = "<group>"; };
+		7B66638116F3D67600E7D327 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = ../../../../../System/Library/Frameworks/QuartzCore.framework; sourceTree = "<group>"; };
+		7B6663A116F3DF5300E7D327 /* AtoZ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AtoZ.framework; path = ../../../../../Users/localadmin/Library/Developer/Xcode/DerivedData/Build/Products/Debug/AtoZ.framework; sourceTree = "<group>"; };
+		7BDFE2B0167A38FA00BC5C53 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
 		8DC2EF5B0486A6940098B216 /* MailCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MailCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		F81A8AD20C03FC3B002F780A /* CTMIME_MessagePart.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CTMIME_MessagePart.h; path = Source/CTMIME_MessagePart.h; sourceTree = "<group>"; };
@@ -309,7 +310,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B7EDA2A16E103E20043311F /* AtoZ.framework in Frameworks */,
+				7B66638216F3D67700E7D327 /* QuartzCore.framework in Frameworks */,
 				7BDFE2B1167A38FA00BC5C53 /* AddressBook.framework in Frameworks */,
 				F8B6D4F0156EE189008DE9EB /* libetpan_mac.a in Frameworks */,
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
@@ -361,8 +362,8 @@
 		0867D691FE84028FC02AAC07 /* MailCore */ = {
 			isa = PBXGroup;
 			children = (
-				7B7EDA2916E103E20043311F /* AtoZ.framework */,
-				7BDFE2B0167A38FA00BC5C53 /* AddressBook.framework */,
+				7B6663A116F3DF5300E7D327 /* AtoZ.framework */,
+				7B66638116F3D67600E7D327 /* QuartzCore.framework */,
 				F8886339158103460088CF38 /* openssl.xcodeproj */,
 				F888632D158102F50088CF38 /* Cyrus SASL.xcodeproj */,
 				F890D38D10CEECD50039817C /* libetpan.xcodeproj */,
@@ -547,6 +548,7 @@
 		F8DFCF4A15801A5000C01975 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7BDFE2B0167A38FA00BC5C53 /* AddressBook.framework */,
 				F8DFCF4B15801A5000C01975 /* SenTestingKit.framework */,
 				F8DFCF4D15801A5000C01975 /* UIKit.framework */,
 				F8DFCF4F15801A5000C01975 /* Foundation.framework */,
@@ -971,9 +973,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = (
-					"/Library/Frameworks/**",
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					/Users/localadmin/Library/Developer/Xcode/DerivedData/Build/Products/Debug,
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -990,13 +992,11 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
+				MULTIPLY_DEFINED_TREATMENT = "";
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0xb0000000,
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = MailCore;
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = framework;
 				ZERO_LINK = YES;
@@ -1013,9 +1013,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = (
-					"/Library/Frameworks/**",
 					"$(inherited)",
 					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					/Users/localadmin/Library/Developer/Xcode/DerivedData/Build/Products/Debug,
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -1031,12 +1031,10 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0xb0000000,
-				);
+				MULTIPLY_DEFINED_TREATMENT = "";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = MailCore;
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = framework;
@@ -1049,9 +1047,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = "libetpan/build-mac/include/**";
 				LIBRARY_SEARCH_PATHS = "";
 				SDKROOT = macosx;
@@ -1065,9 +1064,10 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = "libetpan/build-mac/include/**";
 				LIBRARY_SEARCH_PATHS = "";
 				SDKROOT = macosx;

@@ -4,7 +4,7 @@
 #import <libetpan/libetpan.h>
 #import "MailCoreTypes.h"
 //#import <AtoZCore/AtoZUmbrella.h>
-#import <AtoZ/AtoZ.h>
+//#import <AtoZ/AtoZ.h>
 
 /**	CTCoreFolder is the class used to get and set attributes for a server side folder. It is also the
  	class used to get a list of messages from the server. You need to make sure and establish a connection

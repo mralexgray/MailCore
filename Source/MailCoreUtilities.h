@@ -2,7 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import <libetpan/libetpan.h>
-#import <AtoZ/AtoZ.h>
+//#import <AtoZ/AtoZ.h>
 
 #define NSERR NSError
 

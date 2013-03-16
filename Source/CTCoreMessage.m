@@ -16,6 +16,8 @@
 #import "CTMIME_HtmlPart.h"
 #import "MailCoreUtilities.h"
 
+#import <AtoZ/AtoZ.h>
+
 @interface CTCoreMessage ()
 @property (readwrite) NSUInteger sequenceNumber;
 @end
