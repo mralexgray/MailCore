@@ -4,3 +4,4 @@
 [submodule "iOSPorts"]
 	path = iOSPorts
 	url = https://github.com/mronge/iOSPorts.git
+	ignore = dirty
